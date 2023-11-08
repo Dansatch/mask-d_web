@@ -1,12 +1,12 @@
-import { Box } from "@chakra-ui/react";
 import "./index.css";
-import ColorModeSwitch from "./components/ColorModeSwitch";
+// import ColorModeSwitch from "./components/ColorModeSwitch";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
     <>
-      <ColorModeSwitch singleIcon={true} />
-      <Box>Mask'd!!!!</Box>
+      {/* <ColorModeSwitch singleIcon={true} /> */}
+      <LoginPage />
     </>
   );
 }
