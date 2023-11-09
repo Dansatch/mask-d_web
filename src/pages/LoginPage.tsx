@@ -24,14 +24,17 @@ const LoginPage = () => {
         right: 0,
         left: 0,
         bottom: 0,
-        opacity: backgroundColor === "gray.800" ? 0.04 : 0.06,
+        opacity:
+          backgroundColor === "gray.800"
+            ? { base: 0.03, lg: 0.02 }
+            : { base: 0.08, md: 0.05, lg: 0.04 },
         zIndex: -1,
       }}
     >
       <Text
         position={"relative"}
         fontFamily={"cursive"}
-        color={colors.darkTheme}
+        color={colorTheme}
         fontSize={"30px"}
       >
         M'D

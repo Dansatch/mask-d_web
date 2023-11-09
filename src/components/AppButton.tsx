@@ -18,7 +18,7 @@ const AppButton = ({
   handleClick,
   width,
   bgColor = colors.black,
-  borderColor = "#646cff",
+  borderColor = colors.darkTheme,
   color = "white",
   isLoading = false,
   colorSchemeEnabled = false,

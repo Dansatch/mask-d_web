@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import FormInput from "./FormInput";
-import SubmitButton from "./SubmitButton";
+import AppButton from "./AppButton";
 
 const schema = z.object({
   username: z.string({ required_error: "Username cannot be empty" }),
@@ -53,7 +53,7 @@ const LoginForm = () => {
           <Link color={"blue.400"}>Can't sign in?</Link>
         </HStack>
 
-        <SubmitButton label={"Login"} />
+        <AppButton text="Login" type="submit" width="100%" />
 
         <Link fontStyle={"italic"} color={"red.400"} marginTop={-2}>
           Don't have an account??

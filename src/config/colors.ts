@@ -8,4 +8,5 @@ export default {
   dark: "#202020",
   // darkGrey: "#242424",
   danger: "#ff5252",
+  defaultPurple: "#646cff",
 };
