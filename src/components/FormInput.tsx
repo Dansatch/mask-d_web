@@ -24,6 +24,7 @@ interface Props {
   asTextArea?: boolean;
   min?: string;
   centerLabel?: boolean;
+  readOnly?: boolean;
 }
 
 const FormInput = ({
@@ -37,6 +38,7 @@ const FormInput = ({
   hideFocusBorder,
   asTextArea,
   centerLabel,
+  readOnly,
   placeholder = "",
 }: Props) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -58,6 +60,7 @@ const FormInput = ({
             borderColor={errorMessage ? colors.danger : ""}
             focusBorderColor={hideFocusBorder ? "transparent" : ""}
             style={styles}
+            readOnly={readOnly}
           />
           <InputRightElement h={"full"}>
             <Button
@@ -79,6 +82,7 @@ const FormInput = ({
           focusBorderColor={hideFocusBorder ? "transparent" : ""}
           resize={"none"}
           style={styles}
+          readOnly={readOnly}
         />
       )}
 

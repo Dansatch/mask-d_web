@@ -1,14 +1,20 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Box,
   FormControl,
   FormLabel,
+  HStack,
   Input,
   InputGroup,
   InputRightElement,
   Link,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
   Text,
   VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
@@ -40,6 +46,10 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 const RegisterForm = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isConfirmed, setConfirmed] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
   const {
     register,
     handleSubmit,
@@ -48,6 +58,8 @@ const RegisterForm = () => {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   const onSubmit = (data: FieldValues) => {
+    if (!isConfirmed) return onOpen();
+
     console.log(data);
   };
 
@@ -56,12 +68,21 @@ const RegisterForm = () => {
     setValue("username", generatedUsername);
   }
 
+  // Pass through to prevent delay
+  useEffect(() => {
+    if (isConfirmed) {
+      onClose();
+      handleSubmit(onSubmit)();
+    }
+  }, [isConfirmed]);
+
   useEffect(() => {
     reshuffleUsername();
   }, []);
 
   return (
     <form
+      ref={formRef}
       onSubmit={handleSubmit(onSubmit)}
       style={{
         // height: "100%",
@@ -146,7 +167,6 @@ const RegisterForm = () => {
         </Box>
 
         <Box width={"40%"}>
-          {/* <SubmitButton label={"Sign up"} /> */}
           <AppButton text="Sign up" colorSchemeEnabled={true} type="submit" />
         </Box>
 
@@ -159,6 +179,44 @@ const RegisterForm = () => {
           Already have an account??
         </Link>
       </VStack>
+
+      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalContent>
+          <ModalBody paddingTop={5}>
+            <Text fontSize={"sm"}>
+              Have you confirmed and securely saved your account username and
+              password? Please ensure you store this information as the username
+              cannot be changed later on and passwords can't be recovered.
+            </Text>
+
+            <HStack marginTop={4}>
+              <FormInput
+                register={register("username")}
+                type="text"
+                readOnly={true}
+              />
+
+              <FormInput
+                register={register("password")}
+                type="password"
+                readOnly={true}
+              />
+            </HStack>
+          </ModalBody>
+
+          <ModalFooter paddingTop={1}>
+            <HStack>
+              <AppButton text="Go Back" handleClick={onClose} />
+              <AppButton
+                text="Create"
+                handleClick={() => {
+                  setConfirmed(true);
+                }}
+              />
+            </HStack>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </form>
   );
 };
