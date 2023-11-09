@@ -1,12 +1,12 @@
 import "./index.css";
 // import ColorModeSwitch from "./components/ColorModeSwitch";
-import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   return (
     <>
       {/* <ColorModeSwitch singleIcon={true} /> */}
-      <LoginPage />
+      <RegisterPage />
     </>
   );
 }

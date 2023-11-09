@@ -18,9 +18,11 @@
     "@tanstack/react-query": "^5.7.2",
     "@tanstack/react-query-devtools": "^5.7.2",
     "framer-motion": "^10.16.4",
+    "friendly-username-generator": "^2.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
+    "react-icons": "^4.11.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
