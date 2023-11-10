@@ -25,6 +25,7 @@ import { RepeatIcon } from "@chakra-ui/icons";
 import FormInput from "./FormInput";
 import colors from "../config/colors";
 import AppButton from "./AppButton";
+import { registerUser } from "../hooks/useUser";
 
 const schema = z
   .object({
@@ -57,10 +58,13 @@ const RegisterForm = () => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = (data: FieldValues) => {
+  const onSubmit = async (data: FieldValues) => {
     if (!isConfirmed) return onOpen();
 
-    console.log(data);
+    return await registerUser({
+      username: data.username,
+      password: data.password,
+    });
   };
 
   function reshuffleUsername() {

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import FormInput from "./FormInput";
 import AppButton from "./AppButton";
+import { loginUser } from "../hooks/useUser";
 
 const schema = z.object({
   username: z.string({ required_error: "Username cannot be empty" }),
@@ -20,8 +21,11 @@ const LoginForm = () => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
-  const onSubmit = (data: FieldValues) => {
-    console.log(data);
+  const onSubmit = async (data: FieldValues) => {
+    return await loginUser({
+      username: data.username,
+      password: data.password,
+    });
   };
 
   return (
