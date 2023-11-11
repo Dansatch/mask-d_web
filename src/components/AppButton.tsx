@@ -4,6 +4,8 @@ import colors from "../config/colors";
 interface Props {
   text: string;
   width?: string;
+  height?: string;
+  fontSize?: string;
   bgColor?: string;
   color?: string;
   borderColor?: string;
@@ -17,6 +19,8 @@ const AppButton = ({
   text,
   handleClick,
   width,
+  height,
+  fontSize = "1em",
   bgColor = colors.black,
   borderColor = colors.darkTheme,
   color = "white",
@@ -31,10 +35,11 @@ const AppButton = ({
         colorScheme="yellow"
         variant={"outline"}
         width={width}
+        height={height}
         borderRadius="8px"
         paddingY="0.6em"
         px={7}
-        fontSize=" 1em"
+        fontSize={fontSize}
         fontWeight="500"
         fontFamily="inherit"
         cursor="pointer"
@@ -56,11 +61,12 @@ const AppButton = ({
     <Button
       type={type}
       width={width}
+      height={height}
       borderRadius="8px"
       border="1px solid transparent"
       paddingY="0.6em"
       px={7}
-      fontSize=" 1em"
+      fontSize={fontSize}
       fontWeight="500"
       fontFamily="inherit"
       bg={bgColor}
