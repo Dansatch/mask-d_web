@@ -2,19 +2,21 @@ import { Box, Text, VStack, useColorModeValue } from "@chakra-ui/react";
 import backgroundImage from "../assets/8.jpg";
 import colors from "../config/colors";
 import RegisterForm from "../components/RegisterForm";
+import useWindowHeight from "../hooks/useWindowHeight";
 
 const RegisterPage = () => {
   const backgroundColor = useColorModeValue("gray.100", "gray.800");
   const colorTheme = useColorModeValue(colors.lightTheme, colors.darkTheme);
+  const windowHeight = useWindowHeight();
 
   return (
     <VStack
-      height={"100vh"}
+      minHeight={"100vh"}
       width={"100%"}
       display={"flex"}
       justifyContent={"space-evenly"}
       alignItems={"center"}
-      // marginY={{ base: 4, sm: 0 }}
+      marginY={windowHeight < 680 ? 5 : 0}
       _before={{
         content: '""',
         backgroundImage: `url(${backgroundImage})`,
