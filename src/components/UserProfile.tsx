@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  Avatar,
   Box,
   Divider,
   Grid,
@@ -19,6 +18,7 @@ import {
 import { EditIcon } from "@chakra-ui/icons";
 
 import AppButton from "./AppButton";
+import ProfileAvatar from "./ProfileAvatar";
 import User from "../entities/User";
 import peopleCount from "../utils/peopleCount";
 import { getUser, followUser, getUserByUsername } from "../hooks/useUser";
@@ -79,7 +79,10 @@ const UserProfile = ({ username }: Props) => {
               alignItems={"center"}
               justifyContent={"center"}
             >
-              <Avatar boxSize={"70px"} />
+              <ProfileAvatar
+                username={selectedUser?.username || ""}
+                boxSize="80px"
+              />
             </GridItem>
 
             <GridItem

@@ -14,6 +14,7 @@ const RegisterPage = () => {
       display={"flex"}
       justifyContent={"space-evenly"}
       alignItems={"center"}
+      // marginY={{ base: 4, sm: 0 }}
       _before={{
         content: '""',
         backgroundImage: `url(${backgroundImage})`,

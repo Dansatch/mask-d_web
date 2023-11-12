@@ -26,6 +26,7 @@ import FormInput from "./FormInput";
 import colors from "../config/colors";
 import AppButton from "./AppButton";
 import { registerUser } from "../hooks/useUser";
+import ProfileAvatar from "./ProfileAvatar";
 
 const schema = z
   .object({
@@ -47,14 +48,15 @@ const schema = z
 type FormData = z.infer<typeof schema>;
 
 const RegisterForm = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [isConfirmed, setConfirmed] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const formRef = useRef<HTMLFormElement>(null);
 
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
@@ -101,6 +103,8 @@ const RegisterForm = () => {
         width={"100%"}
         height={"100%"}
       >
+        <ProfileAvatar username={watch("username")} boxSize={"100px"} />
+
         <FormControl isRequired>
           <FormLabel textAlign={"center"}>Choose username</FormLabel>
 
@@ -125,7 +129,7 @@ const RegisterForm = () => {
           </InputGroup>
 
           {[
-            "For anonymity, usernames are randomized.",
+            "For anonymity, usernames and avatars are randomized.",
             "You can change usernames by clicking the refresh icon in the box.",
             "NB: This can't be changed after sign up.",
           ].map((message, index) => (
@@ -187,25 +191,30 @@ const RegisterForm = () => {
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalContent>
           <ModalBody paddingTop={5}>
-            <Text fontSize={"sm"}>
-              Have you confirmed and securely saved your account username and
-              password? Please ensure you store this information as the username
-              cannot be changed later on and passwords can't be recovered.
-            </Text>
+            <VStack spacing={5}>
+              <Text fontSize={"sm"}>
+                Have you confirmed and securely saved your account username and
+                password? Please ensure you store this information as the
+                username and avatar cannot be changed later on and passwords
+                can't be recovered.
+              </Text>
 
-            <HStack marginTop={4}>
-              <FormInput
-                register={register("username")}
-                type="text"
-                readOnly={true}
-              />
+              <ProfileAvatar username={watch("username")} boxSize={"100px"} />
 
-              <FormInput
-                register={register("password")}
-                type="password"
-                readOnly={true}
-              />
-            </HStack>
+              <HStack marginTop={4}>
+                <FormInput
+                  register={register("username")}
+                  type="text"
+                  readOnly={true}
+                />
+
+                <FormInput
+                  register={register("password")}
+                  type="password"
+                  readOnly={true}
+                />
+              </HStack>
+            </VStack>
           </ModalBody>
 
           <ModalFooter paddingTop={1}>
