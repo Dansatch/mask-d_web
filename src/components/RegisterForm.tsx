@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
@@ -50,7 +50,6 @@ type FormData = z.infer<typeof schema>;
 const RegisterForm = () => {
   const [isConfirmed, setConfirmed] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     register,
@@ -88,7 +87,6 @@ const RegisterForm = () => {
 
   return (
     <form
-      ref={formRef}
       onSubmit={handleSubmit(onSubmit)}
       style={{
         // height: "100%",

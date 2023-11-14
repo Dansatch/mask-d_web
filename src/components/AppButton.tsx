@@ -13,6 +13,7 @@ interface Props {
   handleClick?: () => void;
   colorSchemeEnabled?: boolean;
   type?: "submit" | "button";
+  isDisabled?: boolean;
 }
 
 const AppButton = ({
@@ -20,6 +21,7 @@ const AppButton = ({
   handleClick,
   width,
   height,
+  isDisabled,
   fontSize = "1em",
   bgColor = colors.black,
   borderColor = colors.darkTheme,
@@ -43,6 +45,7 @@ const AppButton = ({
         fontWeight="500"
         fontFamily="inherit"
         cursor="pointer"
+        isDisabled={isDisabled}
         transition="0.25s"
         _hover={{
           transform: "translateY(-3px)",
@@ -72,6 +75,7 @@ const AppButton = ({
       bg={bgColor}
       color={color}
       cursor="pointer"
+      isDisabled={isDisabled}
       transition="0.25s"
       _hover={{
         transform: "translateY(-3px)",

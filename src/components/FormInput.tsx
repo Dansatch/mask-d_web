@@ -1,3 +1,4 @@
+import { HTMLInputTypeAttribute, useState } from "react";
 import {
   FormControl,
   FormLabel,
@@ -7,7 +8,6 @@ import {
   InputRightElement,
   Text,
 } from "@chakra-ui/react";
-import { HTMLInputTypeAttribute, useState } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import colors from "../config/colors";
@@ -19,10 +19,12 @@ interface Props {
   errorMessage?: String;
   register: UseFormRegisterReturn;
   placeholder?: string;
+  labelStyles?: React.CSSProperties;
   styles?: React.CSSProperties;
   hideFocusBorder?: boolean;
   asTextArea?: boolean;
-  min?: string;
+  minLength?: number;
+  maxLength?: number;
   centerLabel?: boolean;
   readOnly?: boolean;
 }
@@ -30,10 +32,12 @@ interface Props {
 const FormInput = ({
   label,
   type,
-  min,
+  minLength,
+  maxLength,
   isRequired,
   errorMessage,
   register,
+  labelStyles,
   styles,
   hideFocusBorder,
   asTextArea,
@@ -46,7 +50,10 @@ const FormInput = ({
   return (
     <FormControl isRequired={Boolean(isRequired)}>
       {label && (
-        <FormLabel textAlign={centerLabel ? "center" : "left"}>
+        <FormLabel
+          textAlign={centerLabel ? "center" : "left"}
+          style={labelStyles}
+        >
           {label}
         </FormLabel>
       )}
@@ -75,7 +82,8 @@ const FormInput = ({
         <Input
           as={asTextArea ? "textarea" : "input"}
           type={type}
-          min={min}
+          minLength={minLength}
+          maxLength={maxLength}
           {...register}
           placeholder={placeholder}
           borderColor={errorMessage ? colors.danger : ""}
