@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "./FormInput";
 import TextAreaInput from "./TextAreaInput";
 import AppButton from "./AppButton";
+import EntryCard from "./EntryCard";
 import { Entry } from "../entities/Entry";
 import { getUser } from "../hooks/useUser";
 import { createEntry } from "../hooks/useEntries";
@@ -62,6 +63,7 @@ const EntryForm = () => {
 
   useEffect(() => {
     onOpen();
+    setShowPreview(false);
   }, []);
 
   return (
@@ -219,16 +221,21 @@ const EntryPreviewModal = ({
   }, []);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered={true}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        handleClose();
+        onClose();
+      }}
+      isCentered={true}
+    >
       <ModalOverlay />
       <ModalContent backgroundColor={useColorModeValue("gray.200", "gray.800")}>
         <ModalHeader>Preview</ModalHeader>
 
         <ModalBody>
           {/* Show preview of entryCard */}
-          <Box backgroundColor={"red"} height={"300px"}>
-            {entryData.text}
-          </Box>
+          <EntryCard entryData={entryData} />
         </ModalBody>
 
         <ModalFooter>

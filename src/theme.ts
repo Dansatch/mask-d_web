@@ -31,6 +31,12 @@ const theme = extendTheme({
     "4xl": "144em", // 3x extra-large screens (2304px and up)
     "5xl": "192em", // 4x extra-large screens (3072px and up)
   },
+  fonts: {
+    shantellSans: `'Shantell Sans', sans-serif`,
+    agbalumo: `'Agbalumo', sans-serif`,
+    pacifico: `'Pacifico', sans-serif`,
+    greatVibes: `'Great Vibes', sans-serif`,
+  },
 });
 
 export default theme;

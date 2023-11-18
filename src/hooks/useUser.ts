@@ -27,6 +27,10 @@ export const getUserByUsername = async (username: string) => {
   return Promise.resolve(users.find((c) => c.username === username));
 };
 
+export const getUserByUserId = async (userId: string) => {
+  return Promise.resolve(users.find((c) => c._id === userId));
+};
+
 export const followUser = async (
   selectedUsername: string,
   currentUsername: string
