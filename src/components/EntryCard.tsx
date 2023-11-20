@@ -1,11 +1,26 @@
 import { useEffect, useState } from "react";
-import { Box, Text } from "@chakra-ui/layout";
-
-import { Entry } from "../entities/Entry";
-import { getUserByUserId } from "../hooks/useUser";
-import formatDate from "../utils/formatDate";
-import colors from "../config/colors";
 import { useColorModeValue } from "@chakra-ui/color-mode";
+import {
+  Card,
+  CardBody,
+  HStack,
+  Grid,
+  GridItem,
+  Spacer,
+} from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/layout";
+import { FaRegComment } from "react-icons/fa";
+
+import ProfileAvatar from "./ProfileAvatar";
+import AppButton from "./AppButton";
+import LikeButton from "./LikeButton";
+import PopUpAnimationBox from "./PopUpAnimationBox";
+import Entry from "../entities/Entry";
+import { getUserByUserId } from "../hooks/useUser";
+import { likeEntry } from "../hooks/useEntries";
+import formatDate from "../utils/formatDate";
+import peopleCount from "../utils/peopleCount";
+import colors from "../config/colors";
 
 interface Props {
   entryData: Entry;
@@ -14,11 +29,10 @@ interface Props {
 }
 
 const EntryCard = ({
-  entryData: { text, title, userId, timestamp: date },
-  height = "350px",
-  width = "350px",
+  entryData: { _id: id, text, title, userId, timestamp: date, likes, comments },
 }: Props) => {
   const [authorName, setAuthorName] = useState("");
+  const isLiked = likes.includes("userIdFromZustand");
 
   useEffect(() => {
     const getAuthorName = async () => {
@@ -38,85 +52,173 @@ const EntryCard = ({
   }, []);
 
   return (
-    <Box
-      maxWidth={"90vw"}
-      width={width}
-      height={height}
-      fontSize={"16px"}
-      color={"#4a4a4a"}
-      backgroundColor={useColorModeValue("#FFF6D5", "#E6D7A3")}
-      margin={"0 auto"}
-      paddingBottom={"5px"}
-      position={"relative"}
-      border={`1px solid ${colors.darkTheme}`}
-      // Extra borders
-      _before={{
-        content: '""',
-        zIndex: -1,
-        margin: "0 1px",
-        maxWidth: "710px",
-        width: "100%",
-        height: "100%",
-        position: "absolute",
-        bottom: "-3px",
-        left: 0,
-        background: "white",
-        border: `1px solid ${colors.darkTheme}`,
-        boxShadow: `3px 3px 8px ${useColorModeValue("#E6D7A3", "#B3A74F")}`,
-      }}
+    <Card
+      width={"100%"}
+      height={"100%"}
+      backgroundColor={useColorModeValue("", "black")}
     >
-      <Box
-        paddingX={"10px"}
-        paddingBottom={"10px"}
-        position={"relative"}
-        height={"inherit"}
-        overflowY={"hidden"}
-        _hover={{
-          cursor: "pointer",
-          overflowY: "auto",
-        }}
-        lineHeight={"25px"}
-      >
-        <Text
-          textAlign={"left"}
-          marginTop={3}
-          textDecoration={"underline"}
-          paddingLeft={2}
-          fontFamily={"agbalumo"}
+      <CardBody width={"100%"} height={"100%"} paddingX={2} paddingY={3}>
+        <Grid
+          h="100%"
+          templateAreas={`"userDetails"
+                          "entryData"
+                          "userReactions"`}
+          gridTemplateRows={"40px 1fr 25px"}
+          gridTemplateColumns={"1fr"}
         >
-          {formatDate(date)}
-        </Text>
+          <GridItem
+            area={"userDetails"}
+            marginTop={-2}
+            padding={0}
+            display={"flex"}
+            justifyContent={"start"}
+            alignItems={"center"}
+          >
+            <HStack width={"100%"} spacing={1} paddingX={1}>
+              <ProfileAvatar boxSize="35px" username={authorName} />
 
-        <Text
-          textAlign={"center"}
-          textIndent={"2em"}
-          textTransform={"uppercase"}
-          fontWeight={"bold"}
-          fontFamily={"heading"}
-        >
-          {title}
-        </Text>
+              <Text
+                fontSize={"md"}
+                textTransform={"uppercase"}
+                fontWeight={"extrabold"}
+                fontFamily={"mono"}
+                color={useColorModeValue("gray.600", "gray.400")}
+                marginTop={1}
+              >
+                {authorName}
+              </Text>
 
-        <Text
-          textAlign={"center"}
-          textIndent={"2em"}
-          fontFamily={"shantellSans"}
-        >
-          {text}
-        </Text>
+              <Spacer />
 
-        <Text
-          textAlign={"right"}
-          marginY={3}
-          textTransform={"capitalize"}
-          paddingRight={6}
-          fontFamily={"pacifico"}
-          fontSize={"xl"}
-        >
-          {`${authorName}.`}
-        </Text>
-      </Box>
-    </Box>
+              <Box marginRight={3}>
+                <AppButton
+                  text="FOLLOW"
+                  height="30px"
+                  width="80px"
+                  fontSize="xs"
+                  colorSchemeEnabled={true}
+                />
+              </Box>
+            </HStack>
+          </GridItem>
+
+          <GridItem
+            area={"entryData"}
+            width={"100%"}
+            fontSize={"16px"}
+            lineHeight={"25px"}
+            color={"#4a4a4a"}
+            backgroundColor={useColorModeValue("#FFF6D5", "#E6D7A3")}
+            border={`1px solid ${colors.darkTheme}`}
+            borderRadius={"3px"}
+            margin={"0 auto"}
+            paddingX={"10px"}
+            paddingBottom={"10px"}
+            overflow={"hidden"}
+            display={"flex"}
+            flexDirection={"column"}
+            boxShadow={`1px 1px 2px ${useColorModeValue("#E6D7A3", "#B3A74F")}`}
+            _hover={{
+              cursor: "pointer",
+              overflowY: "auto",
+            }}
+          >
+            <Spacer />
+            <Text
+              textAlign={"left"}
+              marginTop={1}
+              textDecoration={"underline"}
+              paddingLeft={2}
+              fontFamily={"agbalumo"}
+            >
+              {formatDate(date)}
+            </Text>
+
+            <Spacer />
+            <Box
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <Text
+                textAlign={"center"}
+                textTransform={"uppercase"}
+                fontWeight={"bold"}
+                fontFamily={"heading"}
+              >
+                {title}
+              </Text>
+
+              <Text
+                textAlign={"center"}
+                textIndent={"2em"}
+                fontFamily={"shantellSans"}
+              >
+                {text}
+              </Text>
+            </Box>
+            <Spacer />
+
+            <Text
+              textAlign={"right"}
+              marginY={2}
+              textTransform={"capitalize"}
+              paddingRight={6}
+              fontFamily={"pacifico"}
+              fontSize={"xl"}
+            >
+              {`${authorName}.`}
+            </Text>
+            <Spacer />
+          </GridItem>
+
+          <GridItem area={"userReactions"} marginBottom={-3}>
+            <HStack
+              fontSize={20}
+              boxSize={"100%"}
+              justifyContent={"space-around"}
+            >
+              <Box
+                display={"flex"}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <LikeButton
+                  isLiked={isLiked}
+                  handleClick={async () => await likeEntry(id)}
+                />
+
+                <Text
+                  fontSize={"sm"}
+                  marginLeft={1}
+                  fontFamily={"sans-serif"}
+                  marginTop={"1px"}
+                  opacity={0.9}
+                >
+                  {peopleCount(likes)}
+                </Text>
+              </Box>
+
+              <Box display={"flex"} onClick={() => {}}>
+                <PopUpAnimationBox handleClick={() => {}}>
+                  <FaRegComment />
+                </PopUpAnimationBox>
+
+                <Text
+                  fontSize={"sm"}
+                  marginLeft={1}
+                  fontFamily={"sans-serif"}
+                  marginTop={"1px"}
+                  opacity={0.9}
+                >
+                  {peopleCount(comments)}
+                </Text>
+              </Box>
+            </HStack>
+          </GridItem>
+        </Grid>
+      </CardBody>
+    </Card>
   );
 };
 

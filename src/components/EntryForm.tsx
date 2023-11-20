@@ -19,7 +19,7 @@ import FormInput from "./FormInput";
 import TextAreaInput from "./TextAreaInput";
 import AppButton from "./AppButton";
 import EntryCard from "./EntryCard";
-import { Entry } from "../entities/Entry";
+import Entry from "../entities/Entry";
 import { getUser } from "../hooks/useUser";
 import { createEntry } from "../hooks/useEntries";
 import colors from "../config/colors";
@@ -186,10 +186,13 @@ const EntryForm = () => {
               {showPreview && (
                 <EntryPreviewModal
                   entryData={{
+                    _id: "",
                     title: watch("title"),
                     text: watch("text"),
                     userId: currentUser._id,
                     timestamp,
+                    likes: [],
+                    comments: [],
                   }}
                   handleClose={() => setShowPreview(false)}
                   handleSubmit={handleSubmit(onSubmit)}
@@ -234,8 +237,9 @@ const EntryPreviewModal = ({
         <ModalHeader>Preview</ModalHeader>
 
         <ModalBody>
-          {/* Show preview of entryCard */}
-          <EntryCard entryData={entryData} />
+          <Box boxSize={"350px"} margin={"0 auto"}>
+            <EntryCard entryData={entryData} />
+          </Box>
         </ModalBody>
 
         <ModalFooter>
