@@ -12,6 +12,8 @@ function ProfileAvatar({ username, boxSize }: Props) {
   const [avatarSrc, setAvatarSrc] = useState("");
 
   useEffect(() => {
+    if (!username) return;
+
     const avatar = createAvatar(avataaars, {
       seed: username,
       // ... other options

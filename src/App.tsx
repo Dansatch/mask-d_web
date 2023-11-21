@@ -5,8 +5,6 @@ import entries from "./data/entries";
 import { Box } from "@chakra-ui/react";
 
 // goldenrod
-// Refactor profile avatar to use api
-// Refactor entry like with useMutate
 function App() {
   return (
     <>
