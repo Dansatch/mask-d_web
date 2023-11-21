@@ -7,32 +7,51 @@ import {
   Grid,
   GridItem,
   Spacer,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalHeader,
 } from "@chakra-ui/react";
 import { Box, Text } from "@chakra-ui/layout";
 import { FaRegComment } from "react-icons/fa";
+import { BsArrowLeft } from "react-icons/bs";
 
 import ProfileAvatar from "./ProfileAvatar";
 import AppButton from "./AppButton";
 import LikeButton from "./LikeButton";
 import PopUpAnimationBox from "./PopUpAnimationBox";
+import CommentSection from "./CommentSection";
 import Entry from "../entities/Entry";
 import { getUserByUserId } from "../hooks/useUser";
-import { likeEntry } from "../hooks/useEntries";
+import { useEntryLikes } from "../hooks/useEntries";
 import formatDate from "../utils/formatDate";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
+import { getCommentsCount } from "../hooks/useComments";
 
-interface Props {
+interface EntryBodyProps {
   entryData: Entry;
-  height?: string;
-  width?: string;
+  backgroundColor?: string;
+  onOpen?: () => void;
 }
 
-const EntryCard = ({
-  entryData: { _id: id, text, title, userId, timestamp: date, likes, comments },
-}: Props) => {
+const EntryBody = ({
+  entryData: { _id: entryId, text, title, userId, timestamp: date, likes },
+  backgroundColor,
+  onOpen,
+}: EntryBodyProps) => {
   const [authorName, setAuthorName] = useState("");
   const isLiked = likes.includes("userIdFromZustand");
+
+  const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
+    useEntryLikes(entryId);
+
+  const handleLike = async () => {
+    if (isLiked) await unlikeEntry();
+    else await likeEntry();
+  };
 
   useEffect(() => {
     const getAuthorName = async () => {
@@ -55,14 +74,16 @@ const EntryCard = ({
     <Card
       width={"100%"}
       height={"100%"}
-      backgroundColor={useColorModeValue("", "black")}
+      backgroundColor={backgroundColor}
+      cursor={"pointer"}
+      onClick={onOpen}
     >
-      <CardBody width={"100%"} height={"100%"} paddingX={2} paddingY={3}>
+      <CardBody width={"100%"} height={"100%"} paddingX={3} paddingY={3}>
         <Grid
           h="100%"
           templateAreas={`"userDetails"
-                          "entryData"
-                          "userReactions"`}
+                      "entryData"
+                      "userReactions"`}
           gridTemplateRows={"40px 1fr 25px"}
           gridTemplateColumns={"1fr"}
         >
@@ -185,7 +206,7 @@ const EntryCard = ({
               >
                 <LikeButton
                   isLiked={isLiked}
-                  handleClick={async () => await likeEntry(id)}
+                  handleClick={async () => await handleLike()}
                 />
 
                 <Text
@@ -211,7 +232,7 @@ const EntryCard = ({
                   marginTop={"1px"}
                   opacity={0.9}
                 >
-                  {peopleCount(comments)}
+                  {peopleCount(getCommentsCount(entryId))}
                 </Text>
               </Box>
             </HStack>
@@ -219,6 +240,76 @@ const EntryCard = ({
         </Grid>
       </CardBody>
     </Card>
+  );
+};
+
+interface Props {
+  entryData: Entry;
+  height?: string;
+  width?: string;
+}
+
+const EntryCard = ({ entryData }: Props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const backgroundColor = useColorModeValue("", "black");
+  const getScrollBehavior = () => {
+    if (window.innerWidth < 992) return "inside";
+    else return "outside";
+  };
+
+  return (
+    <>
+      <EntryBody
+        entryData={entryData}
+        onOpen={onOpen}
+        backgroundColor={backgroundColor}
+      />
+
+      <Modal
+        size={{ base: "full", lg: "lg" }}
+        motionPreset="slideInBottom"
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+        scrollBehavior={getScrollBehavior()}
+      >
+        <ModalOverlay />
+        <ModalContent backgroundColor={backgroundColor}>
+          <ModalHeader>
+            <HStack
+              spacing={1}
+              onClick={onClose}
+              cursor={"pointer"}
+              transition={"0.15s"}
+              _hover={{
+                boxShadow: "lg",
+                fontWeight: "bold",
+                transform: "translateY(-3px)",
+              }}
+              boxSize={"fit-content"}
+            >
+              <BsArrowLeft />
+              <Text fontSize={"md"}>Back</Text>
+            </HStack>
+          </ModalHeader>
+
+          <ModalBody paddingX={2} paddingTop={0} marginTop={-1}>
+            <Box height={"350px"}>
+              <EntryBody
+                entryData={entryData}
+                backgroundColor={backgroundColor}
+              />
+            </Box>
+            <Box>
+              <CommentSection
+                entryId={entryData._id}
+                scrollBehavior={getScrollBehavior()}
+              />
+            </Box>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 

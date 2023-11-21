@@ -1,6 +1,13 @@
 export default interface Comment {
   _id: string;
-  userId: string;
   text: string;
+  entryId: string;
+  userId: string;
   likes: string[];
+  timestamp: Date;
+}
+
+export interface CommentDataToSubmit {
+  text: string;
+  entryId: string;
 }

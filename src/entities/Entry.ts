@@ -5,7 +5,6 @@ export default interface Entry {
   userId: string;
   timestamp: Date;
   likes: string[];
-  comments: string[]; //commentIds
 }
 
 export interface EntryDataToSubmit {
