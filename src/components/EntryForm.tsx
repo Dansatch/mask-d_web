@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Box, HStack, Text, VStack } from "@chakra-ui/layout";
 import {
   Modal,
@@ -9,11 +9,13 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
+import { Button } from "@chakra-ui/button";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { BiPlus } from "react-icons/bi";
 
 import FormInput from "./FormInput";
 import TextAreaInput from "./TextAreaInput";
@@ -31,7 +33,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const EntryForm = () => {
+interface Props {
+  displayComponent?: ReactNode;
+}
+
+const EntryForm = ({ displayComponent }: Props) => {
   const [showPreview, setShowPreview] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
@@ -62,12 +68,33 @@ const EntryForm = () => {
   };
 
   useEffect(() => {
-    onOpen();
     setShowPreview(false);
   }, []);
 
   return (
     <>
+      {displayComponent ? (
+        <Box onClick={onOpen}>{displayComponent}</Box>
+      ) : (
+        <Button
+          colorScheme={"yellow"}
+          variant={"link"}
+          padding={2}
+          marginX={{ base: 1, lg: 8 }}
+          fontSize={20}
+          onClick={onOpen}
+          fontFamily={"sans-serif"}
+          cursor={"pointer"}
+        >
+          <HStack spacing={0}>
+            <BiPlus />
+            <Text fontSize={{ base: "xs", md: "sm" }} marginTop={0.5}>
+              New Entry
+            </Text>
+          </HStack>
+        </Button>
+      )}
+
       <Modal
         onClose={onClose}
         isOpen={isOpen}
@@ -192,7 +219,6 @@ const EntryForm = () => {
                     userId: currentUser._id,
                     timestamp,
                     likes: [],
-                    comments: [],
                   }}
                   handleClose={() => setShowPreview(false)}
                   handleSubmit={handleSubmit(onSubmit)}
