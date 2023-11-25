@@ -33,7 +33,8 @@ const SearchInput = ({ placeholder, queryContext = "entries" }: Props) => {
           borderRadius={20}
           colorScheme="blackAlpha"
           placeholder={placeholder}
-          variant={useColorModeValue("outline", "filled")}
+          variant={"filled"}
+          backgroundColor={useColorModeValue("gray.50", "")}
           borderWidth={"1px"}
           focusBorderColor={useColorModeValue(
             colors.lightTheme,

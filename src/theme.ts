@@ -36,6 +36,7 @@ const theme = extendTheme({
     agbalumo: `'Agbalumo', sans-serif`,
     pacifico: `'Pacifico', sans-serif`,
     greatVibes: `'Great Vibes', sans-serif`,
+    playpenSans: `'Playpen Sans', sans-serif`,
   },
 });
 

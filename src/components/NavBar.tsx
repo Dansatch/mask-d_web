@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   HStack,
@@ -14,9 +14,10 @@ import {
   Image,
   Link,
   Text,
+  PlacementWithLogical,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { FaUsers } from "react-icons/fa6";
-import { MdNotificationsActive } from "react-icons/md";
 import { BiHome, BiPlus } from "react-icons/bi";
 
 import NavLink from "./NavLink";
@@ -24,6 +25,7 @@ import ColorModeSwitch from "./ColorModeSwitch";
 import SearchInput from "./SearchInput";
 import ProfileAvatar from "./ProfileAvatar";
 import EntryForm from "./EntryForm";
+import NotificationPanel from "./NotificationPanel";
 import logo from "../assets/1DE-removebg-preview.png";
 import User from "../entities/User";
 import colors from "../config/colors";
@@ -34,7 +36,10 @@ interface Props {
 
 const NavBar = ({ user }: Props) => {
   const [lastClicked, setLastClicked] = useState("Entries");
+  const [notificationPlacement, setNotificationPlacement] =
+    useState<PlacementWithLogical>("auto");
   const { toggleColorMode } = useColorMode();
+  const isMd = useBreakpointValue({ base: false, md: true });
 
   const Links = [
     { label: "Entries", linkTo: "/entries", icon: <BiHome /> },
@@ -46,11 +51,20 @@ const NavBar = ({ user }: Props) => {
     },
     {
       // Change to drop down like add content (USE MENU)
-      label: "Notifications",
+      label: "",
       linkTo: "/notifications",
-      icon: <MdNotificationsActive />,
+      icon: (
+        <NotificationPanel
+          userId={user._id}
+          placement={notificationPlacement}
+        />
+      ),
     },
   ];
+
+  useEffect(() => {
+    setNotificationPlacement(isMd ? "top-end" : "bottom-end");
+  }, [isMd]);
 
   return (
     <>
