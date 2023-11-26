@@ -1,10 +1,11 @@
-import { Box, Center, Divider, HStack, Text, VStack } from "@chakra-ui/layout";
-import User from "../entities/User";
-import ProfileAvatar from "./ProfileAvatar";
-import peopleCount from "../utils/peopleCount";
 import { useEffect, useState } from "react";
-import { getTotalEntriesByUserName } from "../hooks/useEntries";
+import { Box, Center, Divider, HStack, Text, VStack } from "@chakra-ui/layout";
 import { useColorModeValue } from "@chakra-ui/color-mode";
+
+import ProfileAvatar from "./ProfileAvatar";
+import User from "../entities/User";
+import { getTotalEntriesByUserName } from "../hooks/useEntries";
+import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 
 interface Props {
@@ -27,13 +28,14 @@ const SideUserProfilePanel = ({ user }: Props) => {
   return (
     <VStack
       border={`1px solid ${useColorModeValue(gray100, "black")}`}
+      height={"100%"}
       boxShadow={`5px 5px 5px 5px ${useColorModeValue(gray100, "black")}`}
       display={"flex"}
       alignItems={"center"}
       paddingTop={4}
       paddingX={2}
     >
-      <Center border={"2px solid"} borderRadius={"50%"}>
+      <Center borderRadius={"50%"}>
         <ProfileAvatar username={user.username} boxSize="150px" />
       </Center>
 

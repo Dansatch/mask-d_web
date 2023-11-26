@@ -8,6 +8,5 @@ export default <Entry[]>[
     title: "Story of my life",
     userId: "user1",
     likes: [],
-    comments: [],
   },
 ];
