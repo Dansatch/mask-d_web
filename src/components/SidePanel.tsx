@@ -96,6 +96,7 @@ const SidePanel = ({ userId }: Props) => {
               (item) =>
                 item.isNewEntry && (
                   <SidePanelMenuItem
+                    key={item._id}
                     label={`${item.isNewEntry.username} has a new entry`}
                     icon={
                       <ProfileAvatar

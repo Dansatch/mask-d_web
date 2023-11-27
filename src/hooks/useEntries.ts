@@ -1,6 +1,34 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import entries from "../data/entries";
-import { EntryDataToSubmit } from "../entities/Entry";
+import Entry, { EntryDataToSubmit } from "../entities/Entry";
+
+const PAGE_SIZE = 10;
+
+const useEntries = () => {
+  const fetchEntries = (pageParam: number) => {
+    const startIndex = (pageParam - 1) * PAGE_SIZE;
+    const endIndex = startIndex + PAGE_SIZE;
+    const paginatedData = entries.slice(startIndex, endIndex);
+
+    return Promise.resolve(paginatedData);
+  };
+
+  return useInfiniteQuery<Entry[], Error>({
+    queryKey: ["entries"],
+    queryFn: ({ pageParam }) => fetchEntries(Number(pageParam)),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage[lastPage.length - 1] &&
+        lastPage[lastPage.length - 1]._id !== entries[entries.length - 1]._id
+        ? allPages.length + 1
+        : undefined;
+    },
+  });
+};
 
 export const useEntry = (id: string) => {
   id;
@@ -56,3 +84,5 @@ const unlikeEntry = async (entryId: string) => {
   const entry = await useEntry(entryId);
   return entry?.likes.pop();
 };
+
+export default useEntries;
