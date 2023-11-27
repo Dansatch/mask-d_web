@@ -8,6 +8,7 @@ import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 
+// Refactor user props to zustand state
 interface Props {
   user: User;
 }
@@ -50,13 +51,23 @@ const SideUserProfilePanel = ({ user }: Props) => {
         justifyContent={"space-around"}
       >
         <Text fontFamily={"cursive"} fontStyle={"italic"}>
-          {entriesCount} entries
+          {peopleCount(user?.followers || [])} followers
         </Text>
 
         <Text fontFamily={"cursive"} fontStyle={"italic"}>
-          {peopleCount(user?.followers || [])} followers
+          {peopleCount(user?.following || [])} following
         </Text>
       </HStack>
+
+      <Text
+        fontFamily={"cursive"}
+        fontStyle={"italic"}
+        color={useColorModeValue("gray.700", "gray.300")}
+        marginX={"auto"}
+        marginTop={1}
+      >
+        {entriesCount} entries
+      </Text>
 
       <Box marginTop={4} width={"100%"}>
         <Text
