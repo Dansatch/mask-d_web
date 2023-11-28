@@ -21,39 +21,36 @@ import AppButton from "./AppButton";
 import ProfileAvatar from "./ProfileAvatar";
 import User from "../entities/User";
 import peopleCount from "../utils/peopleCount";
-import { getUser, followUser, getUserByUsername } from "../hooks/useUsers";
+import { getUser, followUser } from "../hooks/useUsers";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import colors from "../config/colors";
 
 interface Props {
-  username: string;
+  user: User;
+  handleClose?: () => void;
 }
 
-const UserProfile = ({ username }: Props) => {
-  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
+const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
   const [entriesCount, setEntriesCount] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
   const currentUser = getUser(); // Gotten from state
 
-  async function getUserData() {
-    const fetchedUser = await getUserByUsername(username);
-    setSelectedUser(fetchedUser);
-  }
-
   async function getTotalEntries() {
-    setEntriesCount(await getTotalEntriesByUserName(username));
+    setEntriesCount(await getTotalEntriesByUserName(selectedUser.username));
   }
 
   useEffect(() => {
-    getUserData();
     getTotalEntries();
     onOpen();
   }, []);
 
   return (
     <Modal
-      onClose={onClose}
+      onClose={() => {
+        handleClose();
+        onClose();
+      }}
       isOpen={isOpen}
       motionPreset="slideInBottom"
       scrollBehavior="outside"

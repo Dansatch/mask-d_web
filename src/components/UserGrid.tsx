@@ -3,16 +3,16 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import AppGrid from "./AppGrid";
 import CardContainer from "./CardContainer";
 import React from "react";
-import EntryCardSkeleton from "./EntryCardSkeleton";
-import EntryCard from "./EntryCard";
-import useEntries from "../hooks/useEntries";
+import UserCardSkeleton from "./UserCardSkeleton";
+import UserCard from "./UserCard";
+import useUsers from "../hooks/useUsers";
 
-const EntryGrid = () => {
-  const { data: entries, isLoading, hasNextPage, fetchNextPage } = useEntries();
+const UserGrid = () => {
+  const { data: users, isLoading, hasNextPage, fetchNextPage } = useUsers();
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
 
   const fetchedContentsCount =
-    entries?.pages.reduce((total, page) => total + page.length, 0) || 0;
+    users?.pages.reduce((total, page) => total + page.length, 0) || 0;
 
   return (
     <InfiniteScroll
@@ -21,19 +21,19 @@ const EntryGrid = () => {
       next={() => fetchNextPage()}
       loader={<Spinner />}
     >
-      <AppGrid type="entries">
+      <AppGrid type="users">
         {isLoading &&
           skeletons.map((skeleton) => (
             <CardContainer key={skeleton}>
-              <EntryCardSkeleton />
+              <UserCardSkeleton />
             </CardContainer>
           ))}
 
-        {entries?.pages.map((page, index) => (
+        {users?.pages.map((page, index) => (
           <React.Fragment key={index}>
-            {page.map((entry) => (
-              <CardContainer key={entry._id}>
-                <EntryCard entryData={entry} />
+            {page.map((user) => (
+              <CardContainer key={user._id}>
+                <UserCard userData={user} />
               </CardContainer>
             ))}
           </React.Fragment>
@@ -43,4 +43,4 @@ const EntryGrid = () => {
   );
 };
 
-export default EntryGrid;
+export default UserGrid;

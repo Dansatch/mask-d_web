@@ -7,7 +7,7 @@ import SideUserProfilePanel from "../components/SideUserProfilePanel";
 import SidePanel from "../components/SidePanel";
 import SortSelector from "../components/SortSelector";
 import TimePeriodSelector from "../components/TimePeriodSelector";
-import EntryGrid from "../components/EntryGrid";
+import UserGrid from "../components/UserGrid";
 import users from "../data/users";
 
 const HomePage = () => {
@@ -89,7 +89,7 @@ const HomePage = () => {
               <SortSelector />
             </HStack>
 
-            <EntryGrid />
+            <UserGrid />
           </Box>
         </GridItem>
       </Grid>
