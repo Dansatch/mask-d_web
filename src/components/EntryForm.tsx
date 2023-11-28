@@ -22,7 +22,7 @@ import TextAreaInput from "./TextAreaInput";
 import AppButton from "./AppButton";
 import EntryCard from "./EntryCard";
 import Entry from "../entities/Entry";
-import { getUser } from "../hooks/useUser";
+import { getUser } from "../hooks/useUsers";
 import { createEntry } from "../hooks/useEntries";
 import colors from "../config/colors";
 

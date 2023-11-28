@@ -15,7 +15,7 @@ import LikeButton from "./LikeButton";
 import Comment from "../entities/Comment";
 import peopleCount from "../utils/peopleCount";
 import { useCommentLikes } from "../hooks/useComments";
-import { getUserByUserId } from "../hooks/useUser";
+import { getUserByUserId } from "../hooks/useUsers";
 import ProfileAvatar from "./ProfileAvatar";
 
 interface Props {

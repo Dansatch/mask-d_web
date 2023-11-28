@@ -24,7 +24,7 @@ import LikeButton from "./LikeButton";
 import PopUpAnimationBox from "./PopUpAnimationBox";
 import CommentSection from "./CommentSection";
 import Entry from "../entities/Entry";
-import { getUserByUserId } from "../hooks/useUser";
+import { getUserByUserId } from "../hooks/useUsers";
 import { useEntryLikes } from "../hooks/useEntries";
 import formatDate from "../utils/formatDate";
 import peopleCount from "../utils/peopleCount";

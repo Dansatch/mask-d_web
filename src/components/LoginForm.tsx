@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import FormInput from "./FormInput";
 import AppButton from "./AppButton";
-import { loginUser } from "../hooks/useUser";
+import { loginUser } from "../hooks/useUsers";
 
 const schema = z.object({
   username: z.string({ required_error: "Username cannot be empty" }),

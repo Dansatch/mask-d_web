@@ -21,7 +21,7 @@ import AppButton from "./AppButton";
 import ProfileAvatar from "./ProfileAvatar";
 import User from "../entities/User";
 import peopleCount from "../utils/peopleCount";
-import { getUser, followUser, getUserByUsername } from "../hooks/useUser";
+import { getUser, followUser, getUserByUsername } from "../hooks/useUsers";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import colors from "../config/colors";
 

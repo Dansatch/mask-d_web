@@ -25,7 +25,7 @@ import { RepeatIcon } from "@chakra-ui/icons";
 import FormInput from "./FormInput";
 import colors from "../config/colors";
 import AppButton from "./AppButton";
-import { registerUser } from "../hooks/useUser";
+import { registerUser } from "../hooks/useUsers";
 import ProfileAvatar from "./ProfileAvatar";
 
 const schema = z
