@@ -74,7 +74,10 @@ const EntryBody = ({
     <Card
       width={"100%"}
       height={"100%"}
+      minHeight={"300px"}
       backgroundColor={backgroundColor}
+      border="2px solid"
+      borderColor={useColorModeValue("gray.50", "transparent")}
       cursor={"pointer"}
       onClick={onOpen}
     >

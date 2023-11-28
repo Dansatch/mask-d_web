@@ -1,16 +1,31 @@
+import { useEffect, useState } from "react";
 import { Box, Grid, GridItem, HStack } from "@chakra-ui/layout";
-import { Show } from "@chakra-ui/media-query";
+import { Show, useMediaQuery } from "@chakra-ui/media-query";
 
 import NavBar from "../components/NavBar";
 import SideUserProfilePanel from "../components/SideUserProfilePanel";
 import SidePanel from "../components/SidePanel";
-import users from "../data/users";
 import SortSelector from "../components/SortSelector";
 import TimePeriodSelector from "../components/TimePeriodSelector";
 import EntryGrid from "../components/EntryGrid";
+import users from "../data/users";
 
 const HomePage = () => {
   const user = users[1];
+  const [leftPanelWidth, setLeftPanelWidth] = useState("230px");
+  const [rightPanelWidth, setRightPanelWidth] = useState("240px");
+  const [isXlarge] = useMediaQuery("(min-width: 1200px)");
+  const [isLarge] = useMediaQuery("(min-width: 992px)");
+
+  useEffect(() => {
+    if (isXlarge) {
+      setLeftPanelWidth("240px");
+      setRightPanelWidth("250px");
+    } else if (isLarge) {
+      setLeftPanelWidth("190px");
+      setRightPanelWidth("200px");
+    } else return;
+  }, [isXlarge, isLarge]);
 
   return (
     <Box width={"100%"} height={"100vh"}>
@@ -22,15 +37,15 @@ const HomePage = () => {
         }}
         templateColumns={{
           base: "1fr",
-          lg: "240px 1fr 250px",
+          lg: `${leftPanelWidth} 1fr ${rightPanelWidth}`,
         }}
       >
         <Show above="lg">
           <GridItem
             area={"aside1"}
-            height={"91%"}
+            height={"100%"}
             maxHeight={"100%"}
-            width={"240px"}
+            width={leftPanelWidth}
             position={"fixed"}
             left={0}
             overflowY={"hidden"}
@@ -45,9 +60,9 @@ const HomePage = () => {
         <Show above="lg">
           <GridItem
             area={"aside2"}
-            height={"91%"}
+            height={"100%"}
             maxHeight={"100%"}
-            width={"250px"}
+            width={rightPanelWidth}
             position={"fixed"}
             right={0}
             overflowY={"hidden"}
@@ -63,21 +78,18 @@ const HomePage = () => {
           <Box
             position={"sticky"}
             top={"58px"}
-            paddingTop={{ base: "1px", lg: 5 }}
             paddingBottom={"1px"}
-            paddingLeft={{ base: 4, md: 5, lg: 9 }}
-            paddingRight={4}
+            paddingLeft={{ base: 4, md: 5 }}
+            paddingRight={3}
             width={"100%"}
             zIndex={9}
           >
-            <HStack marginBottom={5} paddingRight={2}>
+            <HStack marginY={5}>
               <TimePeriodSelector />
               <SortSelector />
             </HStack>
 
-            <Box paddingRight={{ lg: 3 }}>
-              <EntryGrid />
-            </Box>
+            <EntryGrid />
           </Box>
         </GridItem>
       </Grid>

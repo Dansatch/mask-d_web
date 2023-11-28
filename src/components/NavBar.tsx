@@ -70,14 +70,14 @@ const NavBar = ({ user }: Props) => {
     <>
       <HStack
         bg={useColorModeValue("gray.100", "gray.900")}
-        px={{ base: 4, md: 10 }}
+        px={{ base: 3, md: 7 }}
         py={2}
         width={"100%"}
         height={"60px"}
         align={"start"}
         justify={"space-between"}
         alignItems={"center"}
-        spacing={{ base: 6, md: 10 }}
+        spacing={{ base: 4, xl: 10 }}
         position={"sticky"}
         top={-0.2}
         zIndex={10}
@@ -108,15 +108,15 @@ const NavBar = ({ user }: Props) => {
           </HStack>
         </Link>
 
-        <Box width={"800px"} maxWidth={"100%"}>
+        <Box flex={1} maxWidth={"100%"}>
           {/* Set context based on current route parameters */}
           <SearchInput placeholder="Search ..." />
         </Box>
 
-        <HStack spacing={9}>
+        <HStack spacing={{ base: 4, xl: 9 }}>
           <HStack
             as={"nav"}
-            spacing={4}
+            spacing={{ base: 2, xl: 4 }}
             display={{ base: "none", md: "flex" }}
             fontSize={"20px"}
           >

@@ -29,11 +29,12 @@ const SideUserProfilePanel = ({ user }: Props) => {
   return (
     <VStack
       border={`1px solid ${useColorModeValue(gray100, "black")}`}
-      height={"100%"}
+      minHeight={"100%"}
       boxShadow={`5px 5px 5px 5px ${useColorModeValue(gray100, "black")}`}
       display={"flex"}
       alignItems={"center"}
       paddingTop={4}
+      paddingBottom={"60px"}
       paddingX={2}
     >
       <Center borderRadius={"50%"}>

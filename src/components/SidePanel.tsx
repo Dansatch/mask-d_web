@@ -48,8 +48,9 @@ const SidePanel = ({ userId }: Props) => {
     <Box
       border={`1px solid ${useColorModeValue(gray100, "black")}`}
       boxShadow={`5px 5px 5px 5px ${useColorModeValue(gray100, "black")}`}
-      height={"100%"}
+      minHeight={"100%"}
       padding={1}
+      paddingBottom={"60px"}
       fontFamily={"playpenSans"}
     >
       <Menu>
