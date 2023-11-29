@@ -19,9 +19,9 @@ interface Props {
 const AppButton = ({
   text,
   handleClick,
-  width,
-  height,
   isDisabled,
+  width = "100%",
+  height = "100%",
   fontSize = "1em",
   bgColor = colors.black,
   borderColor = colors.darkTheme,

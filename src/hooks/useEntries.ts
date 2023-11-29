@@ -31,8 +31,7 @@ const useEntries = () => {
 };
 
 export const useEntry = (id: string) => {
-  id;
-  return Promise.resolve(entries[0]);
+  return Promise.resolve(entries.find((entry) => entry._id === id));
 };
 
 export const getTotalEntriesByUserName = (username: string) => {

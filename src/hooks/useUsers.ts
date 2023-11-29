@@ -1,4 +1,8 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import users from "../data/users";
 import User, { UserDataToSubmit } from "../entities/User";
 
@@ -56,13 +60,69 @@ export const getUserByUserId = async (userId: string) => {
   return Promise.resolve(users.find((c) => c._id === userId));
 };
 
-export const followUser = async (
-  selectedUsername: string,
-  currentUsername: string
+// Edit invalidating queryKey
+export const useFollowUser = (
+  currentUserId: string,
+  selectedUserId: string
 ) => {
-  return Promise.resolve(
-    console.log(`${currentUsername} is following ${selectedUsername}`)
-  );
+  const queryClient = useQueryClient();
+
+  const followMutation = useMutation({
+    // Should be an object **suggestion
+    mutationFn: () => followUser(currentUserId, selectedUserId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+  });
+
+  const unfollowMutation = useMutation({
+    mutationFn: () => unfollowUser(currentUserId, selectedUserId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+  });
+
+  const handleFollow = async () => {
+    if (await isFollowing(currentUserId, selectedUserId))
+      await unfollowMutation.mutateAsync();
+    else await followMutation.mutateAsync();
+  };
+
+  return handleFollow;
+};
+
+const followUser = async (currentUserId: string, userIdToFollow: string) => {
+  let currentUser = await getUserByUserId(currentUserId);
+  const userToFollow = await getUserByUserId(userIdToFollow);
+
+  currentUser?.following.push(userIdToFollow);
+  userToFollow?.followers.push(currentUserId);
+
+  return Promise.resolve();
+};
+
+const unfollowUser = async (
+  currentUserId: string,
+  userIdToUnfollow: string
+) => {
+  const currentUser = await getUserByUserId(currentUserId);
+  const userToUnfollow = await getUserByUserId(userIdToUnfollow);
+
+  if (currentUser)
+    currentUser.following = currentUser.following.filter(
+      (userId) => userId !== userIdToUnfollow
+    );
+
+  if (userToUnfollow)
+    userToUnfollow.followers = userToUnfollow.followers.filter(
+      (userId) => userId !== currentUserId
+    );
+
+  return Promise.resolve();
+};
+
+export const isFollowing = async (
+  currentUserId: string,
+  selectedUserId: string
+) => {
+  const currentUser = await getUserByUserId(currentUserId);
+  return currentUser?.following.includes(selectedUserId);
 };
 
 export default useUsers;

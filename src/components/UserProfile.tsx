@@ -17,12 +17,12 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
 
-import AppButton from "./AppButton";
 import ProfileAvatar from "./ProfileAvatar";
+import FollowButton from "./FollowButton";
 import User from "../entities/User";
-import peopleCount from "../utils/peopleCount";
-import { getUser, followUser } from "../hooks/useUsers";
+import { getUser } from "../hooks/useUsers";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
+import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 
 interface Props {
@@ -113,18 +113,12 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
                     <EditIcon />
                   </HStack>
                 ) : (
-                  <AppButton
-                    text="Follow"
-                    height="30px"
-                    width="120px"
-                    fontSize="sm"
-                    handleClick={async () => {
-                      await followUser(
-                        selectedUser?.username || "",
-                        currentUser.username
-                      );
-                    }}
-                  />
+                  <Box height="30px" width="120px">
+                    <FollowButton
+                      currentUserId={currentUser._id}
+                      userIdToFollow={selectedUser._id}
+                    />
+                  </Box>
                 )}
               </HStack>
             </GridItem>

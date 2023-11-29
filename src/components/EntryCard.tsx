@@ -19,17 +19,17 @@ import { FaRegComment } from "react-icons/fa";
 import { BsArrowLeft } from "react-icons/bs";
 
 import ProfileAvatar from "./ProfileAvatar";
-import AppButton from "./AppButton";
 import LikeButton from "./LikeButton";
 import PopUpAnimationBox from "./PopUpAnimationBox";
 import CommentSection from "./CommentSection";
+import FollowButton from "./FollowButton";
 import Entry from "../entities/Entry";
-import { getUserByUserId } from "../hooks/useUsers";
+import { getUser, getUserByUserId } from "../hooks/useUsers";
 import { useEntryLikes } from "../hooks/useEntries";
+import { getCommentsCount } from "../hooks/useComments";
 import formatDate from "../utils/formatDate";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
-import { getCommentsCount } from "../hooks/useComments";
 
 interface EntryBodyProps {
   entryData: Entry;
@@ -43,7 +43,8 @@ const EntryBody = ({
   onOpen,
 }: EntryBodyProps) => {
   const [authorName, setAuthorName] = useState("");
-  const isLiked = likes.includes("userIdFromZustand");
+  const isLiked = likes.includes(getUser()._id); // userIdFromZustand
+  const currentUserId = getUser()._id; // userIdFromZustand
 
   const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
     useEntryLikes(entryId);
@@ -114,12 +115,15 @@ const EntryBody = ({
 
               <Spacer />
 
-              <Box marginRight={3}>
-                <AppButton
-                  text="FOLLOW"
-                  height="30px"
-                  width="80px"
-                  fontSize="xs"
+              <Box
+                marginRight={3}
+                height="30px"
+                width="80px"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <FollowButton
+                  currentUserId={currentUserId}
+                  userIdToFollow={userId}
                   colorSchemeEnabled={true}
                 />
               </Box>

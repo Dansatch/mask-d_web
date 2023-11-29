@@ -1,13 +1,15 @@
+import { useEffect, useState } from "react";
 import { Box, HStack, Text, VStack } from "@chakra-ui/layout";
 import User from "../entities/User";
 import { Card, CardBody } from "@chakra-ui/card";
 import { useColorModeValue } from "@chakra-ui/color-mode";
+
 import ProfileAvatar from "./ProfileAvatar";
-import peopleCount from "../utils/peopleCount";
-import { useEffect, useState } from "react";
-import { getTotalEntriesByUserName } from "../hooks/useEntries";
-import AppButton from "./AppButton";
 import UserProfile from "./UserProfile";
+import FollowButton from "./FollowButton";
+import { getTotalEntriesByUserName } from "../hooks/useEntries";
+import peopleCount from "../utils/peopleCount";
+import { getUser } from "../hooks/useUsers";
 
 interface Props {
   userData: User;
@@ -16,6 +18,7 @@ interface Props {
 const UserCard = ({ userData }: Props) => {
   const [entriesCount, setEntriesCount] = useState(0);
   const [showFullProfile, setShowFullProfile] = useState(false);
+  const currentUserId = getUser()._id; // userIdFromZustand
 
   async function getTotalEntries() {
     setEntriesCount(await getTotalEntriesByUserName(userData.username));
@@ -59,11 +62,14 @@ const UserCard = ({ userData }: Props) => {
               </Text>
             </HStack>
 
-            <Box marginY={2}>
-              <AppButton
-                text="FOLLOW"
-                height="35px"
-                fontSize="xs"
+            <Box
+              marginY={2}
+              height={"35px"}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <FollowButton
+                currentUserId={currentUserId}
+                userIdToFollow={userData._id}
                 colorSchemeEnabled={true}
               />
             </Box>
