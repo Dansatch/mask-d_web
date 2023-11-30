@@ -10,11 +10,18 @@ const PAGE_SIZE = 10;
 
 const useEntries = (authorId?: string, mostLiked?: boolean) => {
   let entriesToReturn = entries;
-  if (authorId)
+
+  if (authorId) {
     entriesToReturn = entriesToReturn.filter(
       (entry) => entry.userId === authorId
     );
-  mostLiked;
+  }
+
+  if (mostLiked) {
+    entriesToReturn = entriesToReturn
+      .sort((a, b) => b.likes.length - a.likes.length) // Sort by number of likes
+      .slice(0, 3); // Get top 3 most liked entries
+  }
 
   const fetchEntries = (pageParam: number) => {
     const startIndex = (pageParam - 1) * PAGE_SIZE;
@@ -24,8 +31,15 @@ const useEntries = (authorId?: string, mostLiked?: boolean) => {
     return Promise.resolve(paginatedData);
   };
 
+  const queryKey =
+    authorId && !mostLiked
+      ? ["entries", authorId]
+      : authorId && mostLiked
+      ? ["entries", authorId, "mostLiked"]
+      : ["entries"];
+
   return useInfiniteQuery<Entry[], Error>({
-    queryKey: ["entries"],
+    queryKey,
     queryFn: ({ pageParam }) => fetchEntries(Number(pageParam)),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {

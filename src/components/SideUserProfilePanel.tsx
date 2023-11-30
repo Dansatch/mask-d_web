@@ -7,6 +7,7 @@ import User from "../entities/User";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
+import EntryGrid from "./EntryGrid";
 
 // Refactor user props to zustand state
 interface Props {
@@ -35,7 +36,7 @@ const SideUserProfilePanel = ({ user }: Props) => {
       alignItems={"center"}
       paddingTop={4}
       paddingBottom={"60px"}
-      paddingX={2}
+      paddingX={1}
     >
       <Center borderRadius={"50%"}>
         <ProfileAvatar username={user.username} boxSize="150px" />
@@ -84,13 +85,9 @@ const SideUserProfilePanel = ({ user }: Props) => {
 
         <Divider backgroundColor={color} width={"40%"} marginTop={0} />
 
-        {/* Entries grid for top user's entries */}
-        <Box
-          width={"100%"}
-          marginY={2}
-          backgroundColor={"red"}
-          height={"300px"}
-        />
+        {/* <Box width={"100%"} border={"2px solid red"}> */}
+        <EntryGrid authorId={user._id} noOfColumns={1} mostLiked={true} />
+        {/* </Box> */}
       </Box>
     </VStack>
   );

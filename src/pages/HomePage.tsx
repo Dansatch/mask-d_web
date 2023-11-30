@@ -7,7 +7,7 @@ import SideUserProfilePanel from "../components/SideUserProfilePanel";
 import SidePanel from "../components/SidePanel";
 import SortSelector from "../components/SortSelector";
 import TimePeriodSelector from "../components/TimePeriodSelector";
-import UserGrid from "../components/UserGrid";
+import EntryGrid from "../components/EntryGrid";
 import users from "../data/users";
 
 // Make left panel slidable for small devices
@@ -16,17 +16,17 @@ import users from "../data/users";
 const HomePage = () => {
   const user = users[1];
   const [leftPanelWidth, setLeftPanelWidth] = useState("230px");
-  const [rightPanelWidth, setRightPanelWidth] = useState("240px");
+  const [rightPanelWidth, setRightPanelWidth] = useState("260px");
   const [isXlarge] = useMediaQuery("(min-width: 1200px)");
   const [isLarge] = useMediaQuery("(min-width: 992px)");
 
   useEffect(() => {
     if (isXlarge) {
-      setLeftPanelWidth("240px");
-      setRightPanelWidth("250px");
+      setLeftPanelWidth("230px");
+      setRightPanelWidth("260px");
     } else if (isLarge) {
       setLeftPanelWidth("190px");
-      setRightPanelWidth("200px");
+      setRightPanelWidth("250px");
     } else return;
   }, [isXlarge, isLarge]);
 
@@ -92,7 +92,7 @@ const HomePage = () => {
               <SortSelector />
             </HStack>
 
-            <UserGrid />
+            <EntryGrid />
           </Box>
         </GridItem>
       </Grid>

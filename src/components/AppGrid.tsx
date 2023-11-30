@@ -24,7 +24,7 @@ const AppGrid = ({ children, type, noOfColumns }: Props) => {
             }
       }
       spacing={{ base: 5, lg: 3, xl: 5 }}
-      paddingX={1}
+      // paddingX={1}
       paddingY={3}
     >
       {children}
