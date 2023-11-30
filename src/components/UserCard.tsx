@@ -8,8 +8,9 @@ import ProfileAvatar from "./ProfileAvatar";
 import UserProfile from "./UserProfile";
 import FollowButton from "./FollowButton";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
-import peopleCount from "../utils/peopleCount";
 import { getUser } from "../hooks/useUsers";
+import useRefresh from "../hooks/useRefresh";
+import peopleCount from "../utils/peopleCount";
 
 interface Props {
   userData: User;
@@ -18,6 +19,7 @@ interface Props {
 const UserCard = ({ userData }: Props) => {
   const [entriesCount, setEntriesCount] = useState(0);
   const [showFullProfile, setShowFullProfile] = useState(false);
+  const handleRefresh = useRefresh();
   const currentUserId = getUser()._id; // userIdFromZustand
 
   async function getTotalEntries() {
@@ -71,6 +73,7 @@ const UserCard = ({ userData }: Props) => {
                 currentUserId={currentUserId}
                 userIdToFollow={userData._id}
                 colorSchemeEnabled={true}
+                onFollow={handleRefresh}
               />
             </Box>
           </VStack>

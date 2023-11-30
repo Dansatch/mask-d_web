@@ -27,6 +27,7 @@ import Entry from "../entities/Entry";
 import { getUser, getUserByUserId } from "../hooks/useUsers";
 import { useEntryLikes } from "../hooks/useEntries";
 import { getCommentsCount } from "../hooks/useComments";
+import useRefresh from "../hooks/useRefresh";
 import formatDate from "../utils/formatDate";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
@@ -44,6 +45,7 @@ const EntryBody = ({
 }: EntryBodyProps) => {
   const [authorName, setAuthorName] = useState("");
   const isLiked = likes.includes(getUser()._id); // userIdFromZustand
+  const handleRefresh = useRefresh();
   const currentUserId = getUser()._id; // userIdFromZustand
 
   const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
@@ -125,6 +127,7 @@ const EntryBody = ({
                   currentUserId={currentUserId}
                   userIdToFollow={userId}
                   colorSchemeEnabled={true}
+                  onFollow={handleRefresh}
                 />
               </Box>
             </HStack>

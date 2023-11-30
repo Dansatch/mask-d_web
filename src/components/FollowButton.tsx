@@ -6,12 +6,14 @@ interface Props {
   currentUserId: string;
   userIdToFollow: string;
   colorSchemeEnabled?: boolean;
+  onFollow?: () => void;
 }
 
 const FollowButton = ({
   currentUserId,
   userIdToFollow,
   colorSchemeEnabled,
+  onFollow = () => {},
 }: Props) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const handleFollow = useFollowUser(currentUserId, userIdToFollow);
@@ -30,6 +32,7 @@ const FollowButton = ({
   const handleClick = async () => {
     await handleFollow();
     setIsFollowed(!isFollowed); // Toggle the follow status after the button click
+    onFollow();
   };
 
   return (

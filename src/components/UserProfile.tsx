@@ -22,6 +22,7 @@ import FollowButton from "./FollowButton";
 import User from "../entities/User";
 import { getUser } from "../hooks/useUsers";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
+import useRefresh from "../hooks/useRefresh";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 
@@ -34,6 +35,7 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
   const [entriesCount, setEntriesCount] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
+  const handleRefresh = useRefresh();
   const currentUser = getUser(); // Gotten from state
 
   async function getTotalEntries() {
@@ -117,6 +119,7 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
                     <FollowButton
                       currentUserId={currentUser._id}
                       userIdToFollow={selectedUser._id}
+                      onFollow={handleRefresh}
                     />
                   </Box>
                 )}
