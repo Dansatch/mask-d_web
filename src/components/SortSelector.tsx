@@ -13,9 +13,16 @@ const SortSelector = () => {
   // Should access zustand and edit the query directly
   const [sortOrder, setSortOrder] = useState("");
 
-  // Changes depending on current route
-  // E.g : Users by followers, contents by likes, categories only by default
-  const sortOrders = [
+  // Changes between userSortOrders and entrySortOrders depending on current route
+
+  const userSortOrders = [
+    { value: "", label: "Default" },
+    { value: "followers", label: "Followers" },
+    { value: "entries", label: "Entries" },
+  ];
+  userSortOrders;
+
+  const entrySortOrders = [
     { value: "", label: "Default" },
     { value: "likes", label: "Likes" },
     { value: "-likes", label: "Likes (Desc)" },
@@ -23,7 +30,7 @@ const SortSelector = () => {
     { value: "-timestamp", label: "Date created (Desc)" },
   ];
 
-  const currentSortOrder = sortOrders.find(
+  const currentSortOrder = entrySortOrders.find(
     (order) => order.value === sortOrder
   );
 
@@ -35,7 +42,7 @@ const SortSelector = () => {
         </Text>
       </MenuButton>
       <MenuList>
-        {sortOrders.map((order) => (
+        {entrySortOrders.map((order) => (
           <MenuItem
             value={order.value}
             key={order.value}
