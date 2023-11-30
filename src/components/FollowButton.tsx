@@ -9,6 +9,7 @@ interface Props {
   onFollow?: () => void;
 }
 
+// currentUserId to be gotten from zustand state
 const FollowButton = ({
   currentUserId,
   userIdToFollow,
@@ -41,6 +42,7 @@ const FollowButton = ({
       fontSize="xs"
       colorSchemeEnabled={colorSchemeEnabled}
       handleClick={handleClick}
+      isDisabled={currentUserId === userIdToFollow}
     />
   );
 };

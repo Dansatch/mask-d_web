@@ -125,14 +125,12 @@ const EntryBody = ({
                 width="80px"
                 onClick={(event) => event.stopPropagation()}
               >
-                {currentUserId !== userId && (
-                  <FollowButton
-                    currentUserId={currentUserId}
-                    userIdToFollow={userId}
-                    colorSchemeEnabled={true}
-                    onFollow={handleRefresh}
-                  />
-                )}
+                <FollowButton
+                  currentUserId={currentUserId}
+                  userIdToFollow={userId}
+                  colorSchemeEnabled={true}
+                  onFollow={handleRefresh}
+                />
               </Box>
             </HStack>
           </GridItem>
