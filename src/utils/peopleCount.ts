@@ -2,7 +2,7 @@ export default (people: string[] | number) => {
   let count;
 
   if (typeof people === "number") count = people;
-  else count = people.length;
+  else count = people?.length;
 
   if (count < 10000) {
     return count.toString();

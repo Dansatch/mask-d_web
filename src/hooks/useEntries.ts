@@ -8,11 +8,18 @@ import Entry, { EntryDataToSubmit } from "../entities/Entry";
 
 const PAGE_SIZE = 10;
 
-const useEntries = () => {
+const useEntries = (authorId?: string, mostLiked?: boolean) => {
+  let entriesToReturn = entries;
+  if (authorId)
+    entriesToReturn = entriesToReturn.filter(
+      (entry) => entry.userId === authorId
+    );
+  mostLiked;
+
   const fetchEntries = (pageParam: number) => {
     const startIndex = (pageParam - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
-    const paginatedData = entries.slice(startIndex, endIndex);
+    const paginatedData = entriesToReturn.slice(startIndex, endIndex);
 
     return Promise.resolve(paginatedData);
   };
@@ -23,7 +30,8 @@ const useEntries = () => {
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage[lastPage.length - 1] &&
-        lastPage[lastPage.length - 1]._id !== entries[entries.length - 1]._id
+        lastPage[lastPage.length - 1]._id !==
+          entriesToReturn[entriesToReturn.length - 1]?._id
         ? allPages.length + 1
         : undefined;
     },
@@ -44,28 +52,29 @@ export const createEntry = async (data: EntryDataToSubmit) => {
   return Promise.resolve(console.log(`Created ${data.title}`));
 };
 
-export const useEntryLikes = (entryId: string) => {
+// userId to be gotten from zustand state
+export const useEntryLikes = (entryId: string, userId: string) => {
   const queryClient = useQueryClient();
   queryClient;
 
   const likeMutation = useMutation({
-    mutationFn: (entryId: string) => likeEntry(entryId),
+    mutationFn: () => likeEntry(entryId, userId),
     // onSuccess: () =>
     // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
   });
 
   const unlikeMutation = useMutation({
-    mutationFn: (entryId: string) => unlikeEntry(entryId),
+    mutationFn: () => unlikeEntry(entryId, userId),
     // onSuccess: () =>
     // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
   });
 
   const handleLike = async () => {
-    await likeMutation.mutateAsync(entryId);
+    await likeMutation.mutateAsync();
   };
 
   const handleUnlike = async () => {
-    await unlikeMutation.mutateAsync(entryId);
+    await unlikeMutation.mutateAsync();
   };
 
   return {
@@ -74,14 +83,20 @@ export const useEntryLikes = (entryId: string) => {
   };
 };
 
-const likeEntry = async (entryId: string) => {
+const likeEntry = async (entryId: string, userId: string) => {
   const entry = await useEntry(entryId);
-  return entry?.likes.push("userIdFromZustand");
+  return entry?.likes.push(userId);
 };
 
-const unlikeEntry = async (entryId: string) => {
+const unlikeEntry = async (entryId: string, userId: string) => {
+  userId;
   const entry = await useEntry(entryId);
   return entry?.likes.pop();
+};
+
+export const isLiked = async (userId: string, entryId: string) => {
+  const entry = await useEntry(entryId);
+  return entry?.likes.includes(userId);
 };
 
 export default useEntries;

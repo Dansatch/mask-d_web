@@ -9,7 +9,6 @@ import SortSelector from "../components/SortSelector";
 import TimePeriodSelector from "../components/TimePeriodSelector";
 import UserGrid from "../components/UserGrid";
 import users from "../data/users";
-import EntryGrid from "../components/EntryGrid";
 
 // Make left panel slidable for small devices
 // Sort selectors on user grid
@@ -82,7 +81,7 @@ const HomePage = () => {
           <Box
             position={"sticky"}
             top={"58px"}
-            paddingBottom={"1px"}
+            paddingBottom={{ base: "50px", md: 1 }}
             paddingLeft={{ base: 4, md: 5 }}
             paddingRight={3}
             width={"100%"}
@@ -94,7 +93,6 @@ const HomePage = () => {
             </HStack>
 
             <UserGrid />
-            {/* <EntryGrid /> */}
           </Box>
         </GridItem>
       </Grid>

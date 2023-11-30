@@ -19,6 +19,7 @@ import { EditIcon } from "@chakra-ui/icons";
 
 import ProfileAvatar from "./ProfileAvatar";
 import FollowButton from "./FollowButton";
+import EntryGrid from "./EntryGrid";
 import User from "../entities/User";
 import { getUser } from "../hooks/useUsers";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
@@ -56,7 +57,15 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
       isOpen={isOpen}
       motionPreset="slideInBottom"
       scrollBehavior="outside"
-      size={{ base: "full", md: "md" }}
+      size={{
+        base: "full",
+        md: "lg",
+        lg: "xl",
+        xl: "2xl",
+        "2xl": "4xl",
+        "3xl": "5xl",
+        "4xl": "6xl",
+      }}
     >
       <ModalOverlay />
       <ModalContent>
@@ -64,9 +73,11 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
           <ModalCloseButton marginTop={-1} marginRight={-1} />
         </ModalHeader>
 
-        <ModalBody>
+        <ModalBody paddingBottom={0}>
           <Grid
             h="80px"
+            width={{ base: "", md: "380px", "3xl": "420px" }}
+            marginX={"auto"}
             templateRows="repeat(3, 1fr)"
             templateColumns="repeat(4, 1fr)"
             gap={1}
@@ -171,7 +182,7 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
               paddingRight={4}
               display={"flex"}
               textAlign={"left"}
-              fontFamily={"sans-serif"}
+              fontFamily={"playpenSans"}
               borderBottom={`2px solid ${color}`}
               color={color}
               transition={"0.05s"}
@@ -195,7 +206,12 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
 
             <Divider />
 
-            <Box bg={"red"} height={"200px"} marginTop={5} />
+            <Box marginTop={2}>
+              <EntryGrid
+                authorId={selectedUser._id}
+                noOfColumns={{ base: 1, lg: 2, "3xl": 3, "5xl": 4 }}
+              />
+            </Box>
           </Box>
         </ModalBody>
       </ModalContent>

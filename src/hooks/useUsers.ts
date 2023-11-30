@@ -18,7 +18,7 @@ const useUsers = () => {
   };
 
   return useInfiniteQuery<User[], Error>({
-    queryKey: ["entries"],
+    queryKey: ["users"],
     queryFn: ({ pageParam }) => fetchUsers(Number(pageParam)),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {

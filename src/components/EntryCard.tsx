@@ -44,12 +44,14 @@ const EntryBody = ({
   onOpen,
 }: EntryBodyProps) => {
   const [authorName, setAuthorName] = useState("");
-  const isLiked = likes.includes(getUser()._id); // userIdFromZustand
+  const isLiked = likes?.includes(getUser()._id); // userIdFromZustand
   const handleRefresh = useRefresh();
   const currentUserId = getUser()._id; // userIdFromZustand
 
-  const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
-    useEntryLikes(entryId);
+  const { handleLike: likeEntry, handleUnlike: unlikeEntry } = useEntryLikes(
+    entryId,
+    currentUserId
+  );
 
   const handleLike = async () => {
     if (isLiked) await unlikeEntry();
