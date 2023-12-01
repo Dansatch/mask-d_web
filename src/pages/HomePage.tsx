@@ -85,8 +85,8 @@ const HomePage = () => {
             position={"sticky"}
             top={"58px"}
             paddingBottom={{ base: "50px", md: 1 }}
-            paddingLeft={{ base: 4, md: 5 }}
-            paddingRight={3}
+            paddingLeft={{ base: 3, md: 4 }}
+            paddingRight={2}
             width={"100%"}
             zIndex={9}
           >
