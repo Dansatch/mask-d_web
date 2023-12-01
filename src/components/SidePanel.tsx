@@ -1,7 +1,17 @@
 import { Box, Heading, Text } from "@chakra-ui/layout";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerOverlay,
+  ResponsiveValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { Menu } from "@chakra-ui/menu";
 import { useColorModeValue } from "@chakra-ui/color-mode";
+import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { MdOutlineShowChart, MdFormatListBulleted } from "react-icons/md";
 import { RiUserFollowLine } from "react-icons/ri";
 
@@ -12,9 +22,14 @@ import colors from "../config/colors";
 
 interface Props {
   userId: string;
+  isSlideable?: ResponsiveValue<Boolean>;
 }
 
-const SidePanel = ({ userId }: Props) => {
+interface PanelContentProps {
+  userId: string;
+}
+
+const PanelContent = ({ userId }: PanelContentProps) => {
   const {
     fetchFollowingNotifications: { data },
     handleFollowedNotificationsClear,
@@ -46,6 +61,7 @@ const SidePanel = ({ userId }: Props) => {
 
   return (
     <Box
+      width={"100%"}
       border={`1px solid ${useColorModeValue(gray100, "black")}`}
       boxShadow={`5px 5px 5px 5px ${useColorModeValue(gray100, "black")}`}
       minHeight={"100%"}
@@ -130,6 +146,41 @@ const SidePanel = ({ userId }: Props) => {
       </Menu>
     </Box>
   );
+};
+
+const SidePanel = ({ userId, isSlideable }: Props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  if (!isSlideable) return <PanelContent userId={userId} />;
+  else
+    return (
+      <>
+        <ChevronLeftIcon
+          width={"25px"}
+          height={"40px"}
+          position={"absolute"}
+          right={0}
+          display={"flex"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          backgroundColor={useColorModeValue("gray.100", "gray.700")}
+          borderRadius={"2px"}
+          cursor={"pointer"}
+          zIndex={10}
+          onClick={onOpen}
+        />
+
+        <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+          <DrawerOverlay />
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerBody padding={0}>
+              <PanelContent userId={userId} />
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </>
+    );
 };
 
 export default SidePanel;

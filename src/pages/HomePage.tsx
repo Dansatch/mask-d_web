@@ -10,7 +10,6 @@ import TimePeriodSelector from "../components/TimePeriodSelector";
 import UserGrid from "../components/UserGrid";
 import users from "../data/users";
 
-// Make left panel slidable for small devices
 // Mobile view edit
 const HomePage = () => {
   const user = users[1];
@@ -32,6 +31,11 @@ const HomePage = () => {
   return (
     <Box width={"100%"} height={"100vh"}>
       <NavBar user={user} />
+
+      <Show below="lg">
+        <SidePanel userId={user._id} isSlideable={true} />
+      </Show>
+
       <Grid
         templateAreas={{
           base: `"main"`,
