@@ -5,9 +5,11 @@ import {
 } from "@tanstack/react-query";
 import entries from "../data/entries";
 import Entry, { EntryDataToSubmit } from "../entities/Entry";
+import useAppStore from "../store";
 
 const PAGE_SIZE = 10;
 
+// Get parameters from useAppStore().entryQueryStore().entryQuery
 const useEntries = (authorId?: string, mostLiked?: boolean) => {
   let entriesToReturn = entries;
 
@@ -66,19 +68,18 @@ export const createEntry = async (data: EntryDataToSubmit) => {
   return Promise.resolve(console.log(`Created ${data.title}`));
 };
 
-// userId to be gotten from zustand state
-export const useEntryLikes = (entryId: string, userId: string) => {
+export const useEntryLikes = (entryId: string) => {
   const queryClient = useQueryClient();
   queryClient;
 
   const likeMutation = useMutation({
-    mutationFn: () => likeEntry(entryId, userId),
+    mutationFn: () => likeEntry(entryId),
     // onSuccess: () =>
     // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
   });
 
   const unlikeMutation = useMutation({
-    mutationFn: () => unlikeEntry(entryId, userId),
+    mutationFn: () => unlikeEntry(entryId),
     // onSuccess: () =>
     // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
   });
@@ -97,20 +98,14 @@ export const useEntryLikes = (entryId: string, userId: string) => {
   };
 };
 
-const likeEntry = async (entryId: string, userId: string) => {
+const likeEntry = async (entryId: string) => {
   const entry = await useEntry(entryId);
-  return entry?.likes.push(userId);
+  return entry?.likes.push(useAppStore().currentUser._id);
 };
 
-const unlikeEntry = async (entryId: string, userId: string) => {
-  userId;
+const unlikeEntry = async (entryId: string) => {
   const entry = await useEntry(entryId);
   return entry?.likes.pop();
-};
-
-export const isLiked = async (userId: string, entryId: string) => {
-  const entry = await useEntry(entryId);
-  return entry?.likes.includes(userId);
 };
 
 export default useEntries;

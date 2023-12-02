@@ -8,7 +8,6 @@ import ProfileAvatar from "./ProfileAvatar";
 import UserProfile from "./UserProfile";
 import FollowButton from "./FollowButton";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
-import { getUser } from "../hooks/useUsers";
 import useRefresh from "../hooks/useRefresh";
 import peopleCount from "../utils/peopleCount";
 
@@ -20,7 +19,6 @@ const UserCard = ({ userData }: Props) => {
   const [entriesCount, setEntriesCount] = useState(0);
   const [showFullProfile, setShowFullProfile] = useState(false);
   const handleRefresh = useRefresh();
-  const currentUserId = getUser()._id; // userIdFromZustand
 
   async function getTotalEntries() {
     setEntriesCount(await getTotalEntriesByUserName(userData.username));
@@ -70,7 +68,6 @@ const UserCard = ({ userData }: Props) => {
               onClick={(event) => event.stopPropagation()}
             >
               <FollowButton
-                currentUserId={currentUserId}
                 userIdToFollow={userData._id}
                 colorSchemeEnabled={true}
                 onFollow={handleRefresh}

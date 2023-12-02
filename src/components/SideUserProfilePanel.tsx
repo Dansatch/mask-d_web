@@ -3,18 +3,14 @@ import { Box, Center, Divider, HStack, Text, VStack } from "@chakra-ui/layout";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 
 import ProfileAvatar from "./ProfileAvatar";
-import User from "../entities/User";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 import EntryGrid from "./EntryGrid";
+import useAppStore from "../store";
 
-// Refactor user props to zustand state
-interface Props {
-  user: User;
-}
-
-const SideUserProfilePanel = ({ user }: Props) => {
+const SideUserProfilePanel = () => {
+  const user = useAppStore().currentUser;
   const [entriesCount, setEntriesCount] = useState(0);
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
   const gray100 = "#EDEDED"; // gray.100

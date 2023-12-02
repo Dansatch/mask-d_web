@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
 import { isFollowing, useFollowUser } from "../hooks/useUsers";
 import AppButton from "./AppButton";
+import useAppStore from "../store";
 
 interface Props {
-  currentUserId: string;
   userIdToFollow: string;
   colorSchemeEnabled?: boolean;
   onFollow?: () => void;
 }
 
-// currentUserId to be gotten from zustand state
 const FollowButton = ({
-  currentUserId,
   userIdToFollow,
   colorSchemeEnabled,
   onFollow = () => {},
 }: Props) => {
+  const currentUserId = useAppStore().currentUser._id;
   const [isFollowed, setIsFollowed] = useState(false);
   const handleFollow = useFollowUser(currentUserId, userIdToFollow);
 

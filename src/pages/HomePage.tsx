@@ -6,13 +6,11 @@ import NavBar from "../components/NavBar";
 import SideUserProfilePanel from "../components/SideUserProfilePanel";
 import SidePanel from "../components/SidePanel";
 import SortSelector from "../components/SortSelector";
-import TimePeriodSelector from "../components/TimePeriodSelector";
+import TimeFilterSelector from "../components/TimeFilterSelector";
 import UserGrid from "../components/UserGrid";
-import users from "../data/users";
 
 // Mobile view edit
 const HomePage = () => {
-  const user = users[1];
   const [leftPanelWidth, setLeftPanelWidth] = useState("230px");
   const [rightPanelWidth, setRightPanelWidth] = useState("260px");
   const [isXlarge] = useMediaQuery("(min-width: 1200px)");
@@ -30,10 +28,10 @@ const HomePage = () => {
 
   return (
     <Box width={"100%"} height={"100vh"}>
-      <NavBar user={user} />
+      <NavBar />
 
       <Show below="lg">
-        <SidePanel userId={user._id} isSlideable={true} />
+        <SidePanel isSlideable={true} />
       </Show>
 
       <Grid
@@ -59,7 +57,7 @@ const HomePage = () => {
               overflowY: "auto",
             }}
           >
-            <SidePanel userId={user._id} />
+            <SidePanel />
           </GridItem>
         </Show>
 
@@ -76,7 +74,7 @@ const HomePage = () => {
               overflowY: "auto",
             }}
           >
-            <SideUserProfilePanel user={user} />
+            <SideUserProfilePanel />
           </GridItem>
         </Show>
 
@@ -91,7 +89,7 @@ const HomePage = () => {
             zIndex={9}
           >
             <HStack marginY={5}>
-              <TimePeriodSelector />
+              <TimeFilterSelector />
               <SortSelector />
             </HStack>
 

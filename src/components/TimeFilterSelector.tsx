@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
+import useAppStore from "../store";
 
 const options = [
   // { value: "", label: "Default" },
@@ -18,14 +19,26 @@ const options = [
   { value: "allTime", label: "All time" },
 ];
 
-const TimePeriodSelector = () => {
-  // Should access zustand and edit the query directly
-  // Map with options label and use the value for the query
-  const [timePeriod, setTimePeriod] = useState("Today");
+const TimeFilterSelector = () => {
+  const [selectedTimeFilterLabel, setTimeFilterLabel] = useState("Today");
   const [isDisabled, setDisabled] = useState(false);
+  const selectedTimeFilterValue =
+    useAppStore().entryQueryStore().entryQuery.timeFilterValue;
+  const setTimeFilterValue = useAppStore().entryQueryStore(
+    (s) => s.setTimeFilterValue
+  );
 
-  // Should be set to true whenever current route changes to user
   useEffect(() => {
+    const selectedLabel = options.find(
+      (opt) => opt.value === selectedTimeFilterValue
+    )?.label;
+
+    setTimeFilterLabel(selectedLabel || "");
+  }, [selectedTimeFilterValue]);
+
+  // Should be set disabled to true whenever current route changes to user
+  useEffect(() => {
+    setTimeFilterValue("today");
     setDisabled(false);
   }, []);
 
@@ -36,12 +49,12 @@ const TimePeriodSelector = () => {
         isDisabled={isDisabled}
         rightIcon={<BsChevronDown />}
       >
-        <Text overflow={"hidden"}>{timePeriod || "Time Period"}</Text>
+        <Text overflow={"hidden"}>{selectedTimeFilterLabel}</Text>
       </MenuButton>
       <MenuList maxHeight={"70vh"} overflowY={"auto"}>
         {options?.map((option) => (
           <MenuItem
-            onClick={() => setTimePeriod(option.label)}
+            onClick={() => setTimeFilterValue(option.value)}
             key={option.value}
           >
             {option.label}
@@ -52,4 +65,4 @@ const TimePeriodSelector = () => {
   );
 };
 
-export default TimePeriodSelector;
+export default TimeFilterSelector;

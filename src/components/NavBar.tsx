@@ -27,14 +27,11 @@ import ProfileAvatar from "./ProfileAvatar";
 import EntryForm from "./EntryForm";
 import NotificationPanel from "./NotificationPanel";
 import logo from "../assets/1DE-removebg-preview.png";
-import User from "../entities/User";
 import colors from "../config/colors";
+import useAppStore from "../store";
 
-interface Props {
-  user: User;
-}
-
-const NavBar = ({ user }: Props) => {
+const NavBar = () => {
+  const user = useAppStore().currentUser;
   const [lastClicked, setLastClicked] = useState("Entries");
   const [notificationPlacement, setNotificationPlacement] =
     useState<PlacementWithLogical>("auto");

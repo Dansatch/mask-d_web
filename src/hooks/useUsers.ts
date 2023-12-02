@@ -5,9 +5,11 @@ import {
 } from "@tanstack/react-query";
 import users from "../data/users";
 import User, { UserDataToSubmit } from "../entities/User";
+import useAppStore from "../store";
 
 const PAGE_SIZE = 10;
 
+// Get parameters from useAppStore().userQueryStore().userQuery
 const useUsers = () => {
   const fetchUsers = (pageParam: number) => {
     const startIndex = (pageParam - 1) * PAGE_SIZE;
@@ -43,12 +45,18 @@ export const registerUser = async (data: UserDataToSubmit) => {
     following: [],
   };
 
-  console.log("Created " + newUser.username);
-  return Promise.resolve(users.push(newUser));
+  users.push(newUser); // Add user to dummy database
+  useAppStore().setCurrentUser(newUser); // Set currentUser in zustand
+
+  return Promise.resolve(console.log("Created " + newUser.username));
 };
 
 export const loginUser = async (data: UserDataToSubmit) => {
   // Confirm username exists and password matches
+
+  const userData = getUser(); // Gotten from backend with auth token
+  useAppStore().setCurrentUser(userData); // Set currentUser in zustand
+
   return Promise.resolve(console.log(data.username + " logged in"));
 };
 

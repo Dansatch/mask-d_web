@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Button,
   Menu,
@@ -8,31 +7,45 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BsChevronDown } from "react-icons/bs";
+import useAppStore from "../store";
+import { useEffect } from "react";
+
+const userSortOrders = [
+  { value: "", label: "Default" },
+  { value: "followers", label: "Followers" },
+  { value: "entries", label: "Entries" },
+];
+
+const entrySortOrders = [
+  { value: "", label: "Default" },
+  { value: "likes", label: "Likes" },
+  { value: "-likes", label: "Likes (Desc)" },
+  { value: "timestamp", label: "Date created" },
+  { value: "-timestamp", label: "Date created (Desc)" },
+];
 
 const SortSelector = () => {
-  // Should access zustand and edit the query directly
-  const [sortOrder, setSortOrder] = useState("");
+  const currentRoute = "/entries"; // Gotten from nav
 
-  // Changes between userSortOrders and entrySortOrders depending on current route
+  const sortOrder =
+    currentRoute === "/entries"
+      ? useAppStore().entryQueryStore().entryQuery.sortOrder
+      : useAppStore().userQueryStore().userQuery.sortOrder;
+  const setSortOrder =
+    currentRoute === "/entries"
+      ? useAppStore().entryQueryStore((s) => s.setSortOrder)
+      : useAppStore().userQueryStore((s) => s.setSortOrder);
 
-  const userSortOrders = [
-    { value: "", label: "Default" },
-    { value: "followers", label: "Followers" },
-    { value: "entries", label: "Entries" },
-  ];
-  userSortOrders;
+  const sortOrders =
+    currentRoute === "/entries" ? entrySortOrders : userSortOrders;
 
-  const entrySortOrders = [
-    { value: "", label: "Default" },
-    { value: "likes", label: "Likes" },
-    { value: "-likes", label: "Likes (Desc)" },
-    { value: "timestamp", label: "Date created" },
-    { value: "-timestamp", label: "Date created (Desc)" },
-  ];
-
-  const currentSortOrder = entrySortOrders.find(
+  const currentSortOrder = sortOrders.find(
     (order) => order.value === sortOrder
   );
+
+  useEffect(() => {
+    setSortOrder("");
+  }, []);
 
   return (
     <Menu>
@@ -42,7 +55,7 @@ const SortSelector = () => {
         </Text>
       </MenuButton>
       <MenuList>
-        {entrySortOrders.map((order) => (
+        {sortOrders.map((order) => (
           <MenuItem
             value={order.value}
             key={order.value}

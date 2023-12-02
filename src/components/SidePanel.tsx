@@ -19,9 +19,9 @@ import SidePanelMenuItem from "./SidePanelMenuItem";
 import ProfileAvatar from "./ProfileAvatar";
 import useNotifications from "../hooks/useNotifications";
 import colors from "../config/colors";
+import useAppStore from "../store";
 
 interface Props {
-  userId: string;
   isSlideable?: ResponsiveValue<Boolean>;
 }
 
@@ -148,7 +148,8 @@ const PanelContent = ({ userId }: PanelContentProps) => {
   );
 };
 
-const SidePanel = ({ userId, isSlideable }: Props) => {
+const SidePanel = ({ isSlideable }: Props) => {
+  const userId = useAppStore().currentUser._id;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (!isSlideable) return <PanelContent userId={userId} />;

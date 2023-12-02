@@ -7,6 +7,7 @@ import {
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
 import colors from "../config/colors";
+import useAppStore from "../store";
 
 interface Props {
   placeholder: string;
@@ -15,6 +16,10 @@ interface Props {
 
 const SearchInput = ({ placeholder, queryContext = "entries" }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
+  const setSearchText =
+    queryContext === "entries"
+      ? useAppStore().entryQueryStore((s) => s.setSearchText)
+      : useAppStore().userQueryStore((s) => s.setSearchText);
 
   return (
     <form
@@ -23,7 +28,10 @@ const SearchInput = ({ placeholder, queryContext = "entries" }: Props) => {
 
         // Set zustand state depending on context.queryType
         // Navigate to / depending on context.location if not at / already
-        console.log(`${ref.current?.value} search in ${queryContext}`);
+        if (ref.current) {
+          setSearchText(ref.current.value);
+          // navigate("/");
+        }
       }}
     >
       <InputGroup>

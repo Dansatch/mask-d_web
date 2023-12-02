@@ -24,13 +24,14 @@ import PopUpAnimationBox from "./PopUpAnimationBox";
 import CommentSection from "./CommentSection";
 import FollowButton from "./FollowButton";
 import Entry from "../entities/Entry";
-import { getUser, getUserByUserId } from "../hooks/useUsers";
+import { getUserByUserId } from "../hooks/useUsers";
 import { useEntryLikes } from "../hooks/useEntries";
 import { getCommentsCount } from "../hooks/useComments";
 import useRefresh from "../hooks/useRefresh";
 import formatDate from "../utils/formatDate";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
+import useAppStore from "../store";
 
 interface EntryBodyProps {
   entryData: Entry;
@@ -43,15 +44,13 @@ const EntryBody = ({
   backgroundColor,
   onOpen,
 }: EntryBodyProps) => {
+  const currentUserId = useAppStore().currentUser._id;
   const [authorName, setAuthorName] = useState("");
-  const isLiked = likes?.includes(getUser()._id); // userIdFromZustand
+  const isLiked = likes?.includes(currentUserId); // refactor out
   const handleRefresh = useRefresh();
-  const currentUserId = getUser()._id; // userIdFromZustand
 
-  const { handleLike: likeEntry, handleUnlike: unlikeEntry } = useEntryLikes(
-    entryId,
-    currentUserId
-  );
+  const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
+    useEntryLikes(entryId);
 
   const handleLike = async () => {
     if (isLiked) await unlikeEntry();
@@ -126,7 +125,6 @@ const EntryBody = ({
                 onClick={(event) => event.stopPropagation()}
               >
                 <FollowButton
-                  currentUserId={currentUserId}
                   userIdToFollow={userId}
                   colorSchemeEnabled={true}
                   onFollow={handleRefresh}

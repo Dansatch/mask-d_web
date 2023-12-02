@@ -17,16 +17,18 @@ import peopleCount from "../utils/peopleCount";
 import { useCommentLikes } from "../hooks/useComments";
 import { getUserByUserId } from "../hooks/useUsers";
 import ProfileAvatar from "./ProfileAvatar";
+import useAppStore from "../store";
 
 interface Props {
   comment: Comment;
 }
 
 const CommentBody = ({ comment }: Props) => {
+  const currentUserId = useAppStore().currentUser._id;
   const [commentAuthorName, setCommentAuthorName] = useState("");
   const color = useColorModeValue("#3d3d3d", "gray.400");
 
-  const isLiked = comment.likes.includes("userIdFromZustand");
+  const isLiked = comment.likes.includes(currentUserId);
   const { handleLike: likeComment, handleUnlike: unlikeComment } =
     useCommentLikes(comment._id, comment.entryId);
 

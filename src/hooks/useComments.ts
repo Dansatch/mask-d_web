@@ -6,6 +6,7 @@ import {
 
 import comments from "../data/comments";
 import Comment, { CommentDataToSubmit } from "../entities/Comment";
+import useAppStore from "../store";
 
 const PAGE_SIZE = 10;
 
@@ -45,7 +46,7 @@ export const createComment = async (commentData: CommentDataToSubmit) => {
   const comment: Comment = {
     _id: "",
     text: commentData.text,
-    userId: "userIdFromZustand",
+    userId: useAppStore().currentUser._id,
     entryId: commentData.entryId,
     likes: [],
     timestamp: new Date(),
@@ -85,7 +86,7 @@ export const useCommentLikes = (commentId: string, entryId: string) => {
 
 const likeComment = async (commentId: string) => {
   const comment = await useComment(commentId);
-  return comment?.likes.push("userIdFromZustand");
+  return comment?.likes.push(useAppStore().currentUser._id);
 };
 
 const unlikeComment = async (commentId: string) => {

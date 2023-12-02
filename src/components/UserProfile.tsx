@@ -21,11 +21,11 @@ import ProfileAvatar from "./ProfileAvatar";
 import FollowButton from "./FollowButton";
 import EntryGrid from "./EntryGrid";
 import User from "../entities/User";
-import { getUser } from "../hooks/useUsers";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import useRefresh from "../hooks/useRefresh";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
+import useAppStore from "../store";
 
 interface Props {
   user: User;
@@ -37,7 +37,7 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
   const handleRefresh = useRefresh();
-  const currentUser = getUser(); // Gotten from state
+  const currentUser = useAppStore().currentUser;
 
   async function getTotalEntries() {
     setEntriesCount(await getTotalEntriesByUserName(selectedUser.username));
@@ -128,7 +128,6 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
                 ) : (
                   <Box height="30px" width="120px">
                     <FollowButton
-                      currentUserId={currentUser._id}
                       userIdToFollow={selectedUser._id}
                       onFollow={handleRefresh}
                     />
