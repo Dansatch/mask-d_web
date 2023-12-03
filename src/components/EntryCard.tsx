@@ -7,21 +7,14 @@ import {
   Grid,
   GridItem,
   Spacer,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalHeader,
 } from "@chakra-ui/react";
 import { Box, Text } from "@chakra-ui/layout";
 import { FaRegComment } from "react-icons/fa";
-import { BsArrowLeft } from "react-icons/bs";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import ProfileAvatar from "./ProfileAvatar";
 import LikeButton from "./LikeButton";
 import PopUpAnimationBox from "./PopUpAnimationBox";
-import CommentSection from "./CommentSection";
 import FollowButton from "./FollowButton";
 import Entry from "../entities/Entry";
 import { getUserByUserId } from "../hooks/useUsers";
@@ -33,21 +26,24 @@ import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 import useAppStore from "../store";
 
-interface EntryBodyProps {
+interface Props {
   entryData: Entry;
-  backgroundColor?: string;
-  onOpen?: () => void;
 }
 
-const EntryBody = ({
+const EntryCard = ({
   entryData: { _id: entryId, text, title, userId, timestamp: date, likes },
-  backgroundColor,
-  onOpen,
-}: EntryBodyProps) => {
+}: Props) => {
   const currentUserId = useAppStore().currentUser._id;
   const [authorName, setAuthorName] = useState("");
   const isLiked = likes?.includes(currentUserId); // refactor out
   const handleRefresh = useRefresh();
+  const backgroundColor = useColorModeValue("", "black");
+
+  const navigate = useNavigate();
+  const currentPath = useLocation().pathname;
+  const navigationPath = currentPath.startsWith("/users")
+    ? `/users/${authorName}/entry/${entryId}`
+    : `/entries/${entryId}`;
 
   const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
     useEntryLikes(entryId);
@@ -83,7 +79,7 @@ const EntryBody = ({
       border="2px solid"
       borderColor={useColorModeValue("gray.50", "transparent")}
       cursor={"pointer"}
-      onClick={onOpen}
+      onClick={() => navigate(navigationPath)}
     >
       <CardBody width={"100%"} height={"100%"} paddingX={3} paddingY={3}>
         <Grid
@@ -250,76 +246,6 @@ const EntryBody = ({
         </Grid>
       </CardBody>
     </Card>
-  );
-};
-
-interface Props {
-  entryData: Entry;
-  height?: string;
-  width?: string;
-}
-
-const EntryCard = ({ entryData }: Props) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const backgroundColor = useColorModeValue("", "black");
-  const getScrollBehavior = () => {
-    if (window.innerWidth < 992) return "inside";
-    else return "outside";
-  };
-
-  return (
-    <>
-      <EntryBody
-        entryData={entryData}
-        onOpen={onOpen}
-        backgroundColor={backgroundColor}
-      />
-
-      <Modal
-        size={{ base: "full", lg: "lg" }}
-        motionPreset="slideInBottom"
-        onClose={onClose}
-        isOpen={isOpen}
-        isCentered
-        scrollBehavior={getScrollBehavior()}
-      >
-        <ModalOverlay />
-        <ModalContent backgroundColor={backgroundColor}>
-          <ModalHeader>
-            <HStack
-              spacing={1}
-              onClick={onClose}
-              cursor={"pointer"}
-              transition={"0.15s"}
-              _hover={{
-                boxShadow: "lg",
-                fontWeight: "bold",
-                transform: "translateY(-3px)",
-              }}
-              boxSize={"fit-content"}
-            >
-              <BsArrowLeft />
-              <Text fontSize={"md"}>Back</Text>
-            </HStack>
-          </ModalHeader>
-
-          <ModalBody paddingX={2} paddingTop={0} marginTop={-1}>
-            <Box height={"350px"}>
-              <EntryBody
-                entryData={entryData}
-                backgroundColor={backgroundColor}
-              />
-            </Box>
-            <Box>
-              <CommentSection
-                entryId={entryData._id}
-                scrollBehavior={getScrollBehavior()}
-              />
-            </Box>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
   );
 };
 

@@ -14,6 +14,7 @@ import { useColorModeValue } from "@chakra-ui/color-mode";
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { MdOutlineShowChart, MdFormatListBulleted } from "react-icons/md";
 import { RiUserFollowLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
 import SidePanelMenuItem from "./SidePanelMenuItem";
 import ProfileAvatar from "./ProfileAvatar";
@@ -34,6 +35,7 @@ const PanelContent = ({ userId }: PanelContentProps) => {
     fetchFollowingNotifications: { data },
     handleFollowedNotificationsClear,
   } = useNotifications(userId);
+  const navigate = useNavigate();
   const gray100 = "#EDEDED"; // gray.100
 
   const panelOptions = [
@@ -121,12 +123,9 @@ const PanelContent = ({ userId }: PanelContentProps) => {
                         username={item.isNewEntry.username}
                       />
                     }
-                    handleClick={() => {
-                      // Route to user's page
-                      console.log(
-                        `Routed to ${item.isNewEntry?.username}'s page`
-                      );
-                    }}
+                    handleClick={() =>
+                      navigate(`/users/${item.isNewEntry?.username}`)
+                    }
                   />
                 )
             )

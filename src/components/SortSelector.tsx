@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Button,
   Menu,
@@ -7,8 +8,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { BsChevronDown } from "react-icons/bs";
+import { useLocation } from "react-router-dom";
 import useAppStore from "../store";
-import { useEffect } from "react";
 
 const userSortOrders = [
   { value: "", label: "Default" },
@@ -25,19 +26,17 @@ const entrySortOrders = [
 ];
 
 const SortSelector = () => {
-  const currentRoute = "/entries"; // Gotten from nav
+  const currentPath = useLocation().pathname;
+  const currentRouteIsEntries = currentPath.startsWith("/entries");
 
-  const sortOrder =
-    currentRoute === "/entries"
-      ? useAppStore().entryQueryStore().entryQuery.sortOrder
-      : useAppStore().userQueryStore().userQuery.sortOrder;
-  const setSortOrder =
-    currentRoute === "/entries"
-      ? useAppStore().entryQueryStore((s) => s.setSortOrder)
-      : useAppStore().userQueryStore((s) => s.setSortOrder);
+  const sortOrder = currentRouteIsEntries
+    ? useAppStore().entryQueryStore().entryQuery.sortOrder
+    : useAppStore().userQueryStore().userQuery.sortOrder;
+  const setSortOrder = currentRouteIsEntries
+    ? useAppStore().entryQueryStore((s) => s.setSortOrder)
+    : useAppStore().userQueryStore((s) => s.setSortOrder);
 
-  const sortOrders =
-    currentRoute === "/entries" ? entrySortOrders : userSortOrders;
+  const sortOrders = currentRouteIsEntries ? entrySortOrders : userSortOrders;
 
   const currentSortOrder = sortOrders.find(
     (order) => order.value === sortOrder

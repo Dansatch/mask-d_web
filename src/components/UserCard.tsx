@@ -3,9 +3,9 @@ import { Box, HStack, Text, VStack } from "@chakra-ui/layout";
 import User from "../entities/User";
 import { Card, CardBody } from "@chakra-ui/card";
 import { useColorModeValue } from "@chakra-ui/color-mode";
+import { useNavigate } from "react-router-dom";
 
 import ProfileAvatar from "./ProfileAvatar";
-import UserProfile from "./UserProfile";
 import FollowButton from "./FollowButton";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import useRefresh from "../hooks/useRefresh";
@@ -17,7 +17,7 @@ interface Props {
 
 const UserCard = ({ userData }: Props) => {
   const [entriesCount, setEntriesCount] = useState(0);
-  const [showFullProfile, setShowFullProfile] = useState(false);
+  const navigate = useNavigate();
   const handleRefresh = useRefresh();
 
   async function getTotalEntries() {
@@ -37,7 +37,7 @@ const UserCard = ({ userData }: Props) => {
         border="2px solid"
         borderColor={useColorModeValue("gray.50", "transparent")}
         cursor={"pointer"}
-        onClick={() => setShowFullProfile(true)}
+        onClick={() => navigate(`/users/${userData.username}`)}
       >
         <CardBody padding={2}>
           <VStack boxSize={"100%"} spacing={1}>
@@ -76,13 +76,6 @@ const UserCard = ({ userData }: Props) => {
           </VStack>
         </CardBody>
       </Card>
-
-      {showFullProfile && (
-        <UserProfile
-          user={userData}
-          handleClose={() => setShowFullProfile(false)}
-        />
-      )}
     </>
   );
 };

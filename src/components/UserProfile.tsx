@@ -16,34 +16,40 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { EditIcon } from "@chakra-ui/icons";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ProfileAvatar from "./ProfileAvatar";
 import FollowButton from "./FollowButton";
 import EntryGrid from "./EntryGrid";
 import User from "../entities/User";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
+import { getUserByUsername } from "../hooks/useUsers";
 import useRefresh from "../hooks/useRefresh";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 import useAppStore from "../store";
 
-interface Props {
-  user: User;
-  handleClose?: () => void;
-}
-
-const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
+const UserProfile = () => {
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [entriesCount, setEntriesCount] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
   const handleRefresh = useRefresh();
   const currentUser = useAppStore().currentUser;
+  const { username: selectedUsername } = useParams();
+  const navigate = useNavigate();
+
+  async function getSelectedUser() {
+    setSelectedUser(await getUserByUsername(selectedUsername || ""));
+  }
 
   async function getTotalEntries() {
-    setEntriesCount(await getTotalEntriesByUserName(selectedUser.username));
+    selectedUser &&
+      setEntriesCount(await getTotalEntriesByUserName(selectedUser.username));
   }
 
   useEffect(() => {
+    getSelectedUser();
     getTotalEntries();
     onOpen();
   }, []);
@@ -51,7 +57,7 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
   return (
     <Modal
       onClose={() => {
-        handleClose();
+        navigate(-1); // navigates to last history
         onClose();
       }}
       isOpen={isOpen}
@@ -127,10 +133,12 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
                   </HStack>
                 ) : (
                   <Box height="30px" width="120px">
-                    <FollowButton
-                      userIdToFollow={selectedUser._id}
-                      onFollow={handleRefresh}
-                    />
+                    {selectedUser && (
+                      <FollowButton
+                        userIdToFollow={selectedUser._id}
+                        onFollow={handleRefresh}
+                      />
+                    )}
                   </Box>
                 )}
               </HStack>
@@ -206,10 +214,12 @@ const UserProfile = ({ user: selectedUser, handleClose = () => {} }: Props) => {
             <Divider />
 
             <Box marginTop={2}>
-              <EntryGrid
-                authorId={selectedUser._id}
-                noOfColumns={{ base: 1, lg: 2, "3xl": 3, "5xl": 4 }}
-              />
+              {selectedUser && (
+                <EntryGrid
+                  authorId={selectedUser._id}
+                  noOfColumns={{ base: 1, lg: 2, "3xl": 3, "5xl": 4 }}
+                />
+              )}
             </Box>
           </Box>
         </ModalBody>

@@ -12,13 +12,14 @@ import {
   useColorMode,
   Center,
   Image,
-  Link,
+  // Link,
   Text,
   PlacementWithLogical,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { FaUsers } from "react-icons/fa6";
 import { BiHome, BiPlus } from "react-icons/bi";
+import { Link } from "react-router-dom";
 
 import NavLink from "./NavLink";
 import ColorModeSwitch from "./ColorModeSwitch";
@@ -43,13 +44,12 @@ const NavBar = () => {
     { label: "Users", linkTo: "/users", icon: <FaUsers /> },
     {
       label: "New Entry",
-      linkTo: "/contents/create",
+      // linkTo: "", // component renders itself
       icon: <EntryForm displayComponent={<BiPlus />} />,
     },
     {
-      // Change to drop down like add content (USE MENU)
       label: "",
-      linkTo: "/notifications",
+      // linkTo: "", // component renders itself
       icon: (
         <NotificationPanel
           userId={user._id}
@@ -79,12 +79,13 @@ const NavBar = () => {
         top={-0.2}
         zIndex={10}
       >
-        {/* Link to / */}
         <Link
-          minWidth={"50px"}
-          minHeight={"40px"}
-          color={useColorModeValue(colors.lightTheme, colors.darkTheme)}
-          _hover={{ textDecoration: "none" }}
+          to={"/"}
+          style={{
+            minWidth: "50px",
+            minHeight: "40px",
+            color: useColorModeValue(colors.lightTheme, colors.darkTheme),
+          }}
         >
           <HStack spacing={1}>
             <Image
@@ -170,13 +171,13 @@ const NavBar = () => {
               </Center>
               <MenuDivider />
 
-              <Link>
+              <Link to={`/users/${user.username}`}>
                 <MenuItem py={2} px={4}>
                   My Profile
                 </MenuItem>
               </Link>
 
-              <Link>
+              <Link to={"/logout"}>
                 <MenuItem py={2} px={4}>
                   Logout
                 </MenuItem>

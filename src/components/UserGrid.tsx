@@ -1,5 +1,6 @@
 import { Spinner, Text } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Outlet } from "react-router-dom";
 
 import AppGrid from "./AppGrid";
 import CardContainer from "./CardContainer";
@@ -24,31 +25,35 @@ const UserGrid = () => {
     );
 
   return (
-    <InfiniteScroll
-      dataLength={fetchedUsersCount}
-      hasMore={!!hasNextPage}
-      next={() => fetchNextPage()}
-      loader={<Spinner />}
-    >
-      <AppGrid type="users">
-        {isLoading &&
-          skeletons.map((skeleton) => (
-            <CardContainer key={skeleton}>
-              <UserCardSkeleton />
-            </CardContainer>
-          ))}
-
-        {users?.pages.map((page, index) => (
-          <React.Fragment key={index}>
-            {page.map((user) => (
-              <CardContainer key={user._id}>
-                <UserCard userData={user} />
+    <>
+      <InfiniteScroll
+        dataLength={fetchedUsersCount}
+        hasMore={!!hasNextPage}
+        next={() => fetchNextPage()}
+        loader={<Spinner />}
+      >
+        <AppGrid type="users">
+          {isLoading &&
+            skeletons.map((skeleton) => (
+              <CardContainer key={skeleton}>
+                <UserCardSkeleton />
               </CardContainer>
             ))}
-          </React.Fragment>
-        ))}
-      </AppGrid>
-    </InfiniteScroll>
+
+          {users?.pages.map((page, index) => (
+            <React.Fragment key={index}>
+              {page.map((user) => (
+                <CardContainer key={user._id}>
+                  <UserCard userData={user} />
+                </CardContainer>
+              ))}
+            </React.Fragment>
+          ))}
+        </AppGrid>
+      </InfiniteScroll>
+
+      <Outlet />
+    </>
   );
 };
 

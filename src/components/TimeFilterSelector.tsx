@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 import useAppStore from "../store";
+import { useLocation } from "react-router-dom";
 
 const options = [
   // { value: "", label: "Default" },
@@ -21,12 +22,13 @@ const options = [
 
 const TimeFilterSelector = () => {
   const [selectedTimeFilterLabel, setTimeFilterLabel] = useState("Today");
-  const [isDisabled, setDisabled] = useState(false);
   const selectedTimeFilterValue =
     useAppStore().entryQueryStore().entryQuery.timeFilterValue;
   const setTimeFilterValue = useAppStore().entryQueryStore(
     (s) => s.setTimeFilterValue
   );
+  const currentPath = useLocation().pathname;
+  const currentRouteIsUsers = currentPath.startsWith("/users");
 
   useEffect(() => {
     const selectedLabel = options.find(
@@ -36,17 +38,15 @@ const TimeFilterSelector = () => {
     setTimeFilterLabel(selectedLabel || "");
   }, [selectedTimeFilterValue]);
 
-  // Should be set disabled to true whenever current route changes to user
   useEffect(() => {
     setTimeFilterValue("today");
-    setDisabled(false);
   }, []);
 
   return (
     <Menu>
       <MenuButton
         as={Button}
-        isDisabled={isDisabled}
+        isDisabled={currentRouteIsUsers}
         rightIcon={<BsChevronDown />}
       >
         <Text overflow={"hidden"}>{selectedTimeFilterLabel}</Text>

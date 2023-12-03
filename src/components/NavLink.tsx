@@ -1,23 +1,24 @@
 import { Link, Tooltip, useColorModeValue } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import colors from "../config/colors";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   children: ReactNode;
-  linkTo: string;
+  linkTo?: string;
   isClicked?: boolean;
   label?: string;
   styles?: React.CSSProperties;
-  onClick?: () => void;
 }
 
-const NavLink = ({ children, label, isClicked, styles, onClick }: Props) => {
+const NavLink = ({ children, label, linkTo, isClicked, styles }: Props) => {
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
+  const navigate = useNavigate();
 
   return (
     <Tooltip label={label}>
       <Link
-        onClick={onClick}
+        onClick={() => (linkTo ? navigate(linkTo) : {})}
         px={2}
         py={2}
         width={"100%"}

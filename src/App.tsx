@@ -1,13 +1,13 @@
 import "./index.css";
 // import ColorModeSwitch from "./components/ColorModeSwitch";
-import HomePage from "./pages/HomePage";
+import HomeLayout from "./pages/HomeLayout";
 
 // goldenrod
 function App() {
   return (
     <>
       {/* <ColorModeSwitch singleIcon={true} /> */}
-      <HomePage />
+      <HomeLayout />
     </>
   );
 }

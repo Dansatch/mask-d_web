@@ -1,11 +1,12 @@
 import React from "react";
 import { ResponsiveValue, Spinner, Text } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Outlet } from "react-router-dom";
 
 import AppGrid from "./AppGrid";
 import CardContainer from "./CardContainer";
-import EntryCardSkeleton from "./EntryCardSkeleton";
 import EntryCard from "./EntryCard";
+import EntryCardSkeleton from "./EntryCardSkeleton";
 import useEntries from "../hooks/useEntries";
 import colors from "../config/colors";
 
@@ -35,31 +36,35 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
     );
 
   return (
-    <InfiniteScroll
-      dataLength={fetchedEntriesCount}
-      hasMore={!!hasNextPage}
-      next={() => fetchNextPage()}
-      loader={<Spinner />}
-    >
-      <AppGrid type="entries" noOfColumns={noOfColumns}>
-        {isLoading &&
-          skeletons.map((skeleton) => (
-            <CardContainer key={skeleton}>
-              <EntryCardSkeleton />
-            </CardContainer>
-          ))}
-
-        {entries?.pages.map((page, index) => (
-          <React.Fragment key={index}>
-            {page.map((entry) => (
-              <CardContainer key={entry._id}>
-                <EntryCard entryData={entry} />
+    <>
+      <InfiniteScroll
+        dataLength={fetchedEntriesCount}
+        hasMore={!!hasNextPage}
+        next={() => fetchNextPage()}
+        loader={<Spinner />}
+      >
+        <AppGrid type="entries" noOfColumns={noOfColumns}>
+          {isLoading &&
+            skeletons.map((skeleton) => (
+              <CardContainer key={skeleton}>
+                <EntryCardSkeleton />
               </CardContainer>
             ))}
-          </React.Fragment>
-        ))}
-      </AppGrid>
-    </InfiniteScroll>
+
+          {entries?.pages.map((page, index) => (
+            <React.Fragment key={index}>
+              {page.map((entry) => (
+                <CardContainer key={entry._id}>
+                  <EntryCard entryData={entry} />
+                </CardContainer>
+              ))}
+            </React.Fragment>
+          ))}
+        </AppGrid>
+      </InfiniteScroll>
+
+      <Outlet />
+    </>
   );
 };
 

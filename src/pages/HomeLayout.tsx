@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { Box, Grid, GridItem, HStack } from "@chakra-ui/layout";
 import { Show, useMediaQuery } from "@chakra-ui/media-query";
+import { Outlet } from "react-router-dom";
 
-import NavBar from "../components/NavBar";
 import SideUserProfilePanel from "../components/SideUserProfilePanel";
 import SidePanel from "../components/SidePanel";
 import SortSelector from "../components/SortSelector";
 import TimeFilterSelector from "../components/TimeFilterSelector";
-import UserGrid from "../components/UserGrid";
 
 // Mobile view edit
-const HomePage = () => {
+const HomeLayout = () => {
   const [leftPanelWidth, setLeftPanelWidth] = useState("230px");
   const [rightPanelWidth, setRightPanelWidth] = useState("260px");
   const [isXlarge] = useMediaQuery("(min-width: 1200px)");
@@ -28,8 +27,6 @@ const HomePage = () => {
 
   return (
     <Box width={"100%"} height={"100vh"}>
-      <NavBar />
-
       <Show below="lg">
         <SidePanel isSlideable={true} />
       </Show>
@@ -93,7 +90,7 @@ const HomePage = () => {
               <SortSelector />
             </HStack>
 
-            <UserGrid />
+            <Outlet />
           </Box>
         </GridItem>
       </Grid>
@@ -101,4 +98,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomeLayout;
