@@ -107,7 +107,6 @@ const NavBar = () => {
         </Link>
 
         <Box flex={1} maxWidth={"100%"}>
-          {/* Set context based on current route parameters */}
           <SearchInput placeholder="Search ..." />
         </Box>
 

@@ -6,32 +6,31 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { BsSearch } from "react-icons/bs";
+import { useLocation } from "react-router-dom";
+
 import colors from "../config/colors";
 import useAppStore from "../store";
 
 interface Props {
   placeholder: string;
-  queryContext?: "entries" | "users";
 }
 
-const SearchInput = ({ placeholder, queryContext = "entries" }: Props) => {
+const SearchInput = ({ placeholder }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
-  const setSearchText =
-    queryContext === "entries"
-      ? useAppStore().entryQueryStore((s) => s.setSearchText)
-      : useAppStore().userQueryStore((s) => s.setSearchText);
+  const currentPath = useLocation().pathname;
+
+  const currentRouteIsEntries = currentPath.startsWith("/entries");
+
+  const setSearchText = currentRouteIsEntries
+    ? useAppStore().entryQueryStore((s) => s.setSearchText)
+    : useAppStore().userQueryStore((s) => s.setSearchText);
 
   return (
     <form
       onChange={(event) => {
         event.preventDefault();
 
-        // Set zustand state depending on context.queryType
-        // Navigate to / depending on context.location if not at / already
-        if (ref.current) {
-          setSearchText(ref.current.value);
-          // navigate("/");
-        }
+        if (ref.current) setSearchText(ref.current.value);
       }}
     >
       <InputGroup>
