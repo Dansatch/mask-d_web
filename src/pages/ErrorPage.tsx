@@ -1,10 +1,11 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import {
   isRouteErrorResponse,
   useNavigate,
   useRouteError,
 } from "react-router-dom";
 import AppButton from "../components/AppButton";
+import colors from "../config/colors";
 
 const ErrorPage = () => {
   const navigate = useNavigate();
@@ -13,10 +14,14 @@ const ErrorPage = () => {
   return (
     <Box paddingTop={"10vh"}>
       <Heading>
-        {isRouteErrorResponse(error)
-          ? "You lost fam??"
-          : "An unexpected error occured."}
+        {isRouteErrorResponse(error) ? "You lost fam??" : "My bad fam"}
       </Heading>
+
+      <Text fontStyle={"italic"} color={colors.medium}>
+        {isRouteErrorResponse(error)
+          ? "Route doesn't exist"
+          : "An unexpected error occured."}
+      </Text>
 
       <Box width={"130px"} marginX={"auto"} marginTop={5}>
         <AppButton
