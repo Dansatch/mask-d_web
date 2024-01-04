@@ -2,6 +2,7 @@ import { Checkbox, HStack, Link, VStack } from "@chakra-ui/react";
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 
 import FormInput from "./FormInput";
 import AppButton from "./AppButton";
@@ -20,6 +21,7 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const navigate = useNavigate();
 
   const onSubmit = async (data: FieldValues) => {
     return await loginUser({
@@ -59,7 +61,12 @@ const LoginForm = () => {
 
         <AppButton text="Login" type="submit" width="100%" />
 
-        <Link fontStyle={"italic"} color={"red.400"} marginTop={-2}>
+        <Link
+          fontStyle={"italic"}
+          color={"red.400"}
+          marginTop={-2}
+          onClick={() => navigate("/register")}
+        >
           Don't have an account??
         </Link>
       </VStack>

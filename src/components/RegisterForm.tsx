@@ -19,6 +19,7 @@ import {
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
 import { generateUsername } from "friendly-username-generator";
 import { RepeatIcon } from "@chakra-ui/icons";
 
@@ -50,6 +51,7 @@ type FormData = z.infer<typeof schema>;
 const RegisterForm = () => {
   const [isConfirmed, setConfirmed] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -181,6 +183,7 @@ const RegisterForm = () => {
           color={"gray.400"}
           marginTop={-1}
           fontSize={"sm"}
+          onClick={() => navigate("/login")}
         >
           Already have an account??
         </Link>
