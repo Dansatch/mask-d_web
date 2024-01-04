@@ -57,15 +57,16 @@ export const createComment = async (commentData: CommentDataToSubmit) => {
 
 export const useCommentLikes = (commentId: string, entryId: string) => {
   const queryClient = useQueryClient();
+  const currentUserId = useAppStore().currentUser._id;
 
   const likeMutation = useMutation({
-    mutationFn: (commentId: string) => likeComment(commentId),
+    mutationFn: (commentId: string) => likeComment(commentId, currentUserId),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["comments", entryId] }),
   });
 
   const unlikeMutation = useMutation({
-    mutationFn: (commentId: string) => unlikeComment(commentId),
+    mutationFn: (commentId: string) => unlikeComment(commentId, currentUserId),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["comments", entryId] }),
   });
@@ -84,12 +85,13 @@ export const useCommentLikes = (commentId: string, entryId: string) => {
   };
 };
 
-const likeComment = async (commentId: string) => {
+const likeComment = async (commentId: string, currentUserId: string) => {
   const comment = await useComment(commentId);
-  return comment?.likes.push(useAppStore().currentUser._id);
+  return comment?.likes.push(currentUserId);
 };
 
-const unlikeComment = async (commentId: string) => {
+const unlikeComment = async (commentId: string, currentUserId: string) => {
+  currentUserId;
   const comment = await useComment(commentId);
   return comment?.likes.pop();
 };

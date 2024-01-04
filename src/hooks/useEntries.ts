@@ -71,15 +71,16 @@ export const createEntry = async (data: EntryDataToSubmit) => {
 export const useEntryLikes = (entryId: string) => {
   const queryClient = useQueryClient();
   queryClient;
+  const currentUserId = useAppStore().currentUser._id;
 
   const likeMutation = useMutation({
-    mutationFn: () => likeEntry(entryId),
+    mutationFn: () => likeEntry(entryId, currentUserId),
     // onSuccess: () =>
     // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
   });
 
   const unlikeMutation = useMutation({
-    mutationFn: () => unlikeEntry(entryId),
+    mutationFn: () => unlikeEntry(entryId, currentUserId),
     // onSuccess: () =>
     // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
   });
@@ -98,12 +99,13 @@ export const useEntryLikes = (entryId: string) => {
   };
 };
 
-const likeEntry = async (entryId: string) => {
+const likeEntry = async (entryId: string, currentUserId: string) => {
   const entry = await useEntry(entryId);
-  return entry?.likes.push(useAppStore().currentUser._id);
+  return entry?.likes.push(currentUserId);
 };
 
-const unlikeEntry = async (entryId: string) => {
+const unlikeEntry = async (entryId: string, currentUserId: string) => {
+  currentUserId; // to unlike
   const entry = await useEntry(entryId);
   return entry?.likes.pop();
 };
