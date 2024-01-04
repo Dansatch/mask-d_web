@@ -11,28 +11,29 @@ const useNotifications = (userId: string) => {
       Promise.resolve(
         notifications.filter(
           (notification) =>
-            notification.recipientId === userId && !notification.isNewEntry
+            notification.recipientId === userId &&
+            notification.type !== "newEntry"
         )
       ),
   });
 
-  const fetchFollowedNotifications = useQuery<Notification[], Error>({
-    queryKey: ["notifications", "following"],
+  const fetchEntryAlerts = useQuery<Notification[], Error>({
+    queryKey: ["notifications", "entryAlerts"],
     queryFn: () =>
       Promise.resolve(
         notifications.filter(
           (notification) =>
             notification.recipientId === userId &&
-            notification.isNewEntry?.value === true
+            notification.type === "newEntry"
         )
       ),
   });
 
-  const clearFollowedNotificationsMutation = useMutation({
-    mutationFn: (userId: string) => deleteFollowedNotifications(userId),
+  const clearEntryAlertsMutation = useMutation({
+    mutationFn: (userId: string) => deleteEntryAlerts(userId),
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ["notifications", "following"],
+        queryKey: ["notifications", "entryAlerts"],
       }),
   });
 
@@ -46,34 +47,32 @@ const useNotifications = (userId: string) => {
     await clearNotificationsMutation.mutateAsync(userId);
   };
 
-  const handleFollowedNotificationsClear = async () => {
-    await clearFollowedNotificationsMutation.mutateAsync(userId);
+  const handleEntryAlertsClear = async () => {
+    await clearEntryAlertsMutation.mutateAsync(userId);
   };
 
   return {
     fetchNotifications,
-    fetchFollowingNotifications: fetchFollowedNotifications,
+    fetchEntryAlerts,
     handleNotificationsClear,
-    handleFollowedNotificationsClear,
+    handleEntryAlertsClear,
   };
 };
 
 const deleteNotifications = async (userId: string) => {
   const updatedNotifications: Notification[] = notifications.filter(
     (notification) =>
-      notification.recipientId !== userId ||
-      (notification.isNewEntry && notification.isNewEntry.value !== false)
+      notification.recipientId !== userId || notification.type === "newEntry"
   );
   notifications.splice(0, notifications.length, ...updatedNotifications);
   return Promise.resolve(updatedNotifications);
 };
 
-const deleteFollowedNotifications = async (userId: string) => {
+const deleteEntryAlerts = async (userId: string) => {
   // Believe the dummy method is wrong but it works regardless
   const updatedNotifications: Notification[] = notifications.filter(
     (notification) =>
-      notification.recipientId !== userId ||
-      notification.isNewEntry?.value !== true
+      notification.recipientId !== userId || notification.type !== "newEntry"
   );
   return Promise.resolve(
     notifications.splice(0, notifications.length, ...updatedNotifications)

@@ -32,8 +32,8 @@ interface PanelContentProps {
 
 const PanelContent = ({ userId }: PanelContentProps) => {
   const {
-    fetchFollowingNotifications: { data },
-    handleFollowedNotificationsClear,
+    fetchEntryAlerts: { data },
+    handleEntryAlertsClear,
   } = useNotifications(userId);
   const navigate = useNavigate();
   const gray100 = "#EDEDED"; // gray.100
@@ -91,7 +91,7 @@ const PanelContent = ({ userId }: PanelContentProps) => {
             marginLeft={1}
             textTransform={"uppercase"}
           >
-            Followed Updates
+            Entry Updates
             <Button
               padding={0}
               fontSize={"xs"}
@@ -104,7 +104,7 @@ const PanelContent = ({ userId }: PanelContentProps) => {
                 color: useColorModeValue(colors.lightTheme, colors.darkTheme),
                 textDecoration: "underline",
               }}
-              onClick={() => handleFollowedNotificationsClear()}
+              onClick={() => handleEntryAlertsClear()}
             >
               clear
             </Button>
@@ -113,18 +113,18 @@ const PanelContent = ({ userId }: PanelContentProps) => {
           {data && data[0]?._id ? (
             data?.map(
               (item) =>
-                item.isNewEntry && (
+                item.type === "newEntry" && (
                   <SidePanelMenuItem
                     key={item._id}
-                    label={`${item.isNewEntry.username} has a new entry`}
+                    label={`${item.relatedUsername} has a new entry`}
                     icon={
                       <ProfileAvatar
                         boxSize="30px"
-                        username={item.isNewEntry.username}
+                        username={item.relatedUsername}
                       />
                     }
                     handleClick={() =>
-                      navigate(`/users/${item.isNewEntry?.username}`)
+                      navigate(`/users/${item.relatedUsername}`)
                     }
                   />
                 )
