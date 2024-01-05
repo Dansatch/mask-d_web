@@ -14,7 +14,7 @@ import useAppStore from "../store";
 const userSortOrders = [
   { value: "", label: "Default" },
   { value: "followers", label: "Followers" },
-  { value: "entries", label: "Entries" },
+  // { value: "entries", label: "Entries" },
 ];
 
 const entrySortOrders = [

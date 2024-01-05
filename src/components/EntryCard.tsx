@@ -31,7 +31,15 @@ interface Props {
 }
 
 const EntryCard = ({
-  entryData: { _id: entryId, text, title, userId, timestamp: date, likes },
+  entryData: {
+    _id: entryId,
+    text,
+    title,
+    userId,
+    commentDisabled,
+    timestamp: date,
+    likes,
+  },
 }: Props) => {
   const currentUserId = useAppStore().currentUser._id;
   const [authorName, setAuthorName] = useState("");
@@ -39,12 +47,14 @@ const EntryCard = ({
   const handleRefresh = useRefresh();
   const backgroundColor = useColorModeValue("", "black");
 
+  // Navigation variables
   const navigate = useNavigate();
   const currentPath = useLocation().pathname;
   const navigationPath = currentPath.startsWith("/users")
     ? `/users/${authorName}/entry/${entryId}`
     : `/entries/${entryId}`;
 
+  // Liking mechanism
   const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
     useEntryLikes(entryId);
 
@@ -226,8 +236,15 @@ const EntryCard = ({
                 </Text>
               </Box>
 
-              <Box display={"flex"} onClick={() => {}}>
-                <PopUpAnimationBox handleClick={() => {}}>
+              <Box
+                display={"flex"}
+                onClick={() => {}}
+                opacity={commentDisabled ? 0.3 : 1}
+              >
+                <PopUpAnimationBox
+                  handleClick={() => {}}
+                  isDisabled={commentDisabled}
+                >
                   <FaRegComment />
                 </PopUpAnimationBox>
 
@@ -238,7 +255,9 @@ const EntryCard = ({
                   marginTop={"1px"}
                   opacity={0.9}
                 >
-                  {peopleCount(getCommentsCount(entryId))}
+                  {commentDisabled
+                    ? "-"
+                    : peopleCount(getCommentsCount(entryId))}
                 </Text>
               </Box>
             </HStack>

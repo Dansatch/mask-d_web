@@ -7,9 +7,12 @@ const AnimatedBox = motion(Box);
 interface Props {
   handleClick: () => void;
   children: ReactNode;
+  isDisabled?: boolean;
 }
 
-const PopUpAnimationBox = ({ handleClick, children }: Props) => {
+const PopUpAnimationBox = ({ handleClick, children, isDisabled }: Props) => {
+  if (isDisabled) return <Box cursor={"pointer"}>{children}</Box>;
+
   return (
     <AnimatedBox
       cursor={"pointer"}

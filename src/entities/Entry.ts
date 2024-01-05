@@ -3,13 +3,15 @@ export default interface Entry {
   title: string;
   text: string;
   userId: string;
-  timestamp: Date;
   likes: string[];
+  commentDisabled: boolean;
+  timestamp: Date;
 }
 
 export interface EntryDataToSubmit {
   title: string;
   text: string;
   userId: string;
+  commentDisabled: boolean;
   timestamp: Date;
 }

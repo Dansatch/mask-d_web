@@ -60,7 +60,7 @@ const EntryOverview = () => {
             {entryData && <EntryCard entryData={entryData} />}
           </Box>
           <Box>
-            {entryData && (
+            {entryData && !entryData.commentDisabled && (
               <CommentSection
                 entryId={entryData._id}
                 scrollBehavior={getScrollBehavior()}

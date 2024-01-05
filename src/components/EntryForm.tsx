@@ -9,6 +9,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
+import { Radio, RadioGroup } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { useDisclosure } from "@chakra-ui/hooks";
@@ -29,6 +30,7 @@ import colors from "../config/colors";
 const schema = z.object({
   title: z.string(),
   text: z.string({ required_error: "Text cannot be empty" }),
+  commentDisabled: z.boolean(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -48,21 +50,32 @@ const EntryForm = ({ displayComponent }: Props) => {
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
+  const setCommentDisabled = (value: "allow" | "disable") => {
+    if (value === "disable") setValue("commentDisabled", true);
+    else setValue("commentDisabled", false);
+  };
+
   let titleLength: number = watch("title")?.length || 0;
   let textLength: number = watch("text")?.length || 0;
   let timestamp: Date = new Date();
 
-  const onSubmit = async ({ title, text }: z.infer<typeof schema>) => {
+  const onSubmit = async ({
+    title,
+    text,
+    commentDisabled,
+  }: z.infer<typeof schema>) => {
     await createEntry({
       title,
       text,
       userId: currentUser._id,
+      commentDisabled,
       timestamp,
     });
   };
@@ -191,12 +204,34 @@ const EntryForm = ({ displayComponent }: Props) => {
                   </Text>
                 </Box>
 
+                <RadioGroup
+                  width={"100%"}
+                  marginTop={-1}
+                  paddingLeft={".5vw"}
+                  onChange={setCommentDisabled}
+                  fontFamily={"cursive"}
+                >
+                  <HStack>
+                    <Text textAlign={"left"} marginX={2}>
+                      Allow comments?
+                    </Text>
+
+                    <Radio value={"allow"} colorScheme="yellow" defaultChecked>
+                      Allow
+                    </Radio>
+                    <Radio value={"disable"} colorScheme="yellow">
+                      Disable
+                    </Radio>
+                  </HStack>
+                </RadioGroup>
+
                 <Box
                   width={"100%"}
                   display={"flex"}
                   alignItems={"end"}
                   justifyContent={"end"}
                   paddingRight={1}
+                  marginY={1}
                 >
                   <AppButton
                     text="Next"
@@ -217,6 +252,7 @@ const EntryForm = ({ displayComponent }: Props) => {
                     title: watch("title"),
                     text: watch("text"),
                     userId: currentUser._id,
+                    commentDisabled: watch("commentDisabled"),
                     timestamp,
                     likes: [],
                   }}

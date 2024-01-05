@@ -8,6 +8,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 1 User 1",
     userId: "user1",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -16,6 +17,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 2 User 1",
     userId: "user1",
+    commentDisabled: true,
     likes: [],
   },
 
@@ -26,6 +28,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 3 User 2",
     userId: "user2",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -34,6 +37,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 4 User 2",
     userId: "user2",
+    commentDisabled: false,
     likes: [],
   },
 
@@ -44,6 +48,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 5 User 3",
     userId: "user3",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -52,6 +57,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 6 User 3",
     userId: "user3",
+    commentDisabled: false,
     likes: [],
   },
 
@@ -62,6 +68,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 7 User 4",
     userId: "user4",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -70,6 +77,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 8 User 4",
     userId: "user4",
+    commentDisabled: false,
     likes: [],
   },
 
@@ -80,6 +88,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 9 User 1 Additional",
     userId: "user1",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -88,6 +97,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 10 User 1 Additional",
     userId: "user1",
+    commentDisabled: false,
     likes: [],
   },
 
@@ -98,6 +108,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 11 User 2 Additional",
     userId: "user2",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -106,6 +117,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 12 User 2 Additional",
     userId: "user2",
+    commentDisabled: false,
     likes: [],
   },
 
@@ -116,6 +128,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 13 User 3 Additional",
     userId: "user3",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -124,6 +137,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 14 User 3 Additional",
     userId: "user3",
+    commentDisabled: false,
     likes: [],
   },
 
@@ -134,6 +148,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 15 User 4 Additional",
     userId: "user4",
+    commentDisabled: false,
     likes: [],
   },
   {
@@ -142,6 +157,7 @@ const entries: Entry[] = [
     timestamp: new Date(),
     title: "Title 16 User 4 Additional",
     userId: "user4",
+    commentDisabled: false,
     likes: [],
   },
 ];
