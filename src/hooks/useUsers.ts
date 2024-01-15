@@ -39,6 +39,7 @@ export const getUser = () => {
 export const registerUser = async (data: UserDataToSubmit) => {
   const newUser: User = {
     ...data,
+    isPrivate: data?.isPrivate || false,
     _id: data.username + "id",
     timestamp: new Date(),
     followers: [],

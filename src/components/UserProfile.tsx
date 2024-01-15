@@ -21,6 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ProfileAvatar from "./ProfileAvatar";
 import FollowButton from "./FollowButton";
 import EntryGrid from "./EntryGrid";
+import PrivacyBadge from "./PrivacyBadge";
 import User from "../entities/User";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import { getUserByUsername } from "../hooks/useUsers";
@@ -38,6 +39,8 @@ const UserProfile = () => {
   const currentUser = useAppStore().currentUser;
   const { username: selectedUsername } = useParams();
   const navigate = useNavigate();
+  const hideEntries =
+    selectedUser?.isPrivate && selectedUser?._id !== currentUser._id;
 
   async function getSelectedUser() {
     setSelectedUser(await getUserByUsername(selectedUsername || ""));
@@ -94,11 +97,16 @@ const UserProfile = () => {
               display={"flex"}
               alignItems={"center"}
               justifyContent={"center"}
+              flexDirection={"column"}
             >
               <ProfileAvatar
                 username={selectedUser?.username || ""}
                 boxSize="80px"
               />
+
+              <Box marginTop={"2px"}>
+                <PrivacyBadge isPrivate={selectedUser?.isPrivate} />
+              </Box>
             </GridItem>
 
             <GridItem
@@ -199,28 +207,38 @@ const UserProfile = () => {
               }}
             >
               Entries{" "}
-              <Text
-                marginTop={1}
-                marginLeft={1}
-                fontSize={"xs"}
-                fontFamily={"cursive"}
-                fontStyle={"italic"}
-                fontWeight={"thin"}
-              >
-                {`(${entriesCount})`}
-              </Text>
+              {!hideEntries && (
+                <Text
+                  marginTop={1}
+                  marginLeft={1}
+                  fontSize={"xs"}
+                  fontFamily={"cursive"}
+                  fontStyle={"italic"}
+                  fontWeight={"thin"}
+                >
+                  {`(${entriesCount})`}
+                </Text>
+              )}
             </Box>
 
             <Divider />
 
-            <Box marginTop={2}>
-              {selectedUser && (
-                <EntryGrid
-                  authorId={selectedUser._id}
-                  noOfColumns={{ base: 1, lg: 2, "3xl": 3, "5xl": 4 }}
-                />
-              )}
-            </Box>
+            {selectedUser && (
+              <Box marginTop={2}>
+                {hideEntries ? (
+                  <Text
+                    fontStyle={"italic"}
+                    color={colors.medium}
+                    marginLeft={1}
+                  >{`${selectedUser.username}'s entries are private`}</Text>
+                ) : (
+                  <EntryGrid
+                    authorId={selectedUser._id}
+                    noOfColumns={{ base: 1, lg: 2, "3xl": 3, "5xl": 4 }}
+                  />
+                )}
+              </Box>
+            )}
           </Box>
         </ModalBody>
       </ModalContent>

@@ -12,6 +12,8 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
+  Radio,
+  RadioGroup,
   Text,
   VStack,
   useDisclosure,
@@ -40,6 +42,9 @@ const schema = z
           "Password must contain at least 1 uppercase letter, 1 symbol, and be at least 8 characters long",
       }),
     confirmPassword: z.string({ required_error: "Password cannot be empty" }),
+    isPrivate: z.boolean({
+      required_error: "You must choose a privacy setting",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -61,12 +66,18 @@ const RegisterForm = () => {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  const setAccountVisibility = (value: "private" | "public") => {
+    if (value === "private") setValue("isPrivate", true);
+    else setValue("isPrivate", false);
+  };
+
   const onSubmit = async (data: FieldValues) => {
     if (!isConfirmed) return onOpen();
 
     return await registerUser({
       username: data.username,
       password: data.password,
+      isPrivate: data.isPrivate,
     });
   };
 
@@ -171,6 +182,42 @@ const RegisterForm = () => {
             NB: For anonymity sake your email isn't collected. Confirm your
             password once more as this account can't be gotten back if
             forgotten.
+          </Text>
+        </Box>
+
+        <Box>
+          <RadioGroup
+            width={"100%"}
+            paddingLeft={".5vw"}
+            onChange={setAccountVisibility}
+            fontFamily={"cursive"}
+          >
+            <HStack
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <Text textAlign={"left"} marginRight={2}>
+                Account privacy?
+              </Text>
+
+              <Radio value={"private"} colorScheme="yellow">
+                Private
+              </Radio>
+
+              <Radio value={"public"} colorScheme="yellow" defaultChecked>
+                Public
+              </Radio>
+            </HStack>
+          </RadioGroup>
+
+          <Text
+            fontSize={{ base: "xs", md: "sm", lg: "xs" }}
+            fontStyle={"italic"}
+            color={colors.medium}
+          >
+            This determines whether or not your entries would be seen by other
+            users or your eyes only. It can be changed later on
           </Text>
         </Box>
 
