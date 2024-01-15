@@ -118,7 +118,7 @@ const EntryForm = ({ displayComponent }: Props) => {
       >
         <ModalOverlay />
         <ModalContent
-          backgroundColor={useColorModeValue("gray.200", "gray.800")}
+          backgroundColor={useColorModeValue("gray.100", "gray.800")}
         >
           <ModalCloseButton />
           <ModalHeader>
