@@ -10,6 +10,7 @@ import RegisterPage from "./pages/RegisterPage";
 import AuthLayout from "./pages/AuthLayout";
 import UserProfile from "./components/UserProfile";
 import EntryOverview from "./components/EntryOverview";
+import Logout from "./components/Logout";
 
 const router = createBrowserRouter([
   {
@@ -65,7 +66,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/logout",
-        element: <Box />,
+        element: <Logout />,
       },
     ],
   },

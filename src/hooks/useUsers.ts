@@ -61,6 +61,12 @@ export const loginUser = async (data: UserDataToSubmit) => {
   return Promise.resolve(console.log(data.username + " logged in"));
 };
 
+export const logoutUser = async () => {
+  // Delete user cookie data
+  // Delete user state data
+  return Promise.resolve(console.log("User logged out successfully"));
+};
+
 export const getUserByUsername = async (username: string) => {
   return Promise.resolve(users.find((c) => c.username === username));
 };
