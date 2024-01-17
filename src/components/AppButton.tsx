@@ -1,4 +1,4 @@
-import { Button, Spinner } from "@chakra-ui/react";
+import { Button, Spinner, useColorModeValue } from "@chakra-ui/react";
 import colors from "../config/colors";
 
 interface Props {
@@ -23,9 +23,9 @@ const AppButton = ({
   width = "100%",
   height = "100%",
   fontSize = "1em",
-  bgColor = colors.black,
+  bgColor = useColorModeValue("gray.300", colors.black),
   borderColor = colors.darkTheme,
-  color = "white",
+  color = useColorModeValue("black", "white"),
   isLoading = false,
   colorSchemeEnabled = false,
   type = "button",

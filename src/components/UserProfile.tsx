@@ -15,13 +15,13 @@ import {
   useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { EditIcon } from "@chakra-ui/icons";
 import { useNavigate, useParams } from "react-router-dom";
 
 import ProfileAvatar from "./ProfileAvatar";
 import FollowButton from "./FollowButton";
 import EntryGrid from "./EntryGrid";
 import PrivacyBadge from "./PrivacyBadge";
+import ProfileEdit from "./ProfileEdit";
 import User from "../entities/User";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import { getUserByUsername } from "../hooks/useUsers";
@@ -127,18 +127,7 @@ const UserProfile = () => {
                 </Text>
 
                 {selectedUser?._id === currentUser._id ? (
-                  <HStack
-                    fontWeight={"bold"}
-                    fontFamily={"sans-serif"}
-                    cursor={"pointer"}
-                    spacing={1}
-                    _hover={{
-                      opacity: 0.7,
-                    }}
-                  >
-                    <Text>Edit</Text>
-                    <EditIcon />
-                  </HStack>
+                  <ProfileEdit />
                 ) : (
                   <Box height="30px" width="120px">
                     {selectedUser && (

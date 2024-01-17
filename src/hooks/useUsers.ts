@@ -67,6 +67,30 @@ export const logoutUser = async () => {
   return Promise.resolve(console.log("User logged out successfully"));
 };
 
+export const updateUserPassword = async ({
+  oldPassword,
+  newPassword,
+}: {
+  oldPassword: string;
+  newPassword: string;
+}) => {
+  return Promise.resolve(
+    console.log(`${oldPassword} changed to ${newPassword}`)
+  );
+};
+
+export const updateUserPrivacy = async ({
+  isPrivate,
+}: {
+  isPrivate: boolean;
+}) => {
+  let newPrivacy: string;
+  if (isPrivate) newPrivacy = "Private";
+  else newPrivacy = "Public";
+
+  return Promise.resolve(console.log(`User privacy updated to ${newPrivacy}`));
+};
+
 export const getUserByUsername = async (username: string) => {
   return Promise.resolve(users.find((c) => c.username === username));
 };
