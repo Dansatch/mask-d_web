@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import entries from "../data/entries";
-import Entry, { EntryDataToSubmit } from "../entities/Entry";
+import Entry, { EntryDataToEdit, EntryDataToSubmit } from "../entities/Entry";
 import useAppStore from "../store";
 
 const PAGE_SIZE = 10;
@@ -66,6 +66,11 @@ export const getTotalEntriesByUserName = (username: string) => {
 export const createEntry = async (data: EntryDataToSubmit) => {
   // Convert to Entry
   return Promise.resolve(console.log(`Created ${data.title}`));
+};
+
+export const editEntry = async (data: EntryDataToEdit) => {
+  // Convert to Entry
+  return Promise.resolve(console.log(`Edited ${data.title}`));
 };
 
 export const useEntryLikes = (entryId: string) => {

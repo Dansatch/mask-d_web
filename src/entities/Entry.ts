@@ -15,3 +15,11 @@ export interface EntryDataToSubmit {
   commentDisabled: boolean;
   timestamp: Date;
 }
+
+export interface EntryDataToEdit {
+  _id: string;
+  title: string;
+  text: string;
+  commentDisabled: boolean;
+  timestamp: Date;
+}

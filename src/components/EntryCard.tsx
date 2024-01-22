@@ -9,6 +9,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { Box, Text } from "@chakra-ui/layout";
+import { EditIcon } from "@chakra-ui/icons";
 import { FaRegComment } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -16,6 +17,7 @@ import ProfileAvatar from "./ProfileAvatar";
 import LikeButton from "./LikeButton";
 import PopUpAnimationBox from "./PopUpAnimationBox";
 import FollowButton from "./FollowButton";
+import EntryForm from "./EntryForm";
 import Entry from "../entities/Entry";
 import { getUserByUserId } from "../hooks/useUsers";
 import { useEntryLikes } from "../hooks/useEntries";
@@ -28,6 +30,7 @@ import useAppStore from "../store";
 
 interface Props {
   entryData: Entry;
+  isPreview?: boolean;
 }
 
 const EntryCard = ({
@@ -40,6 +43,7 @@ const EntryCard = ({
     timestamp: date,
     likes,
   },
+  isPreview,
 }: Props) => {
   const currentUserId = useAppStore().currentUser._id;
   const [authorName, setAuthorName] = useState("");
@@ -125,16 +129,37 @@ const EntryCard = ({
               <Spacer />
 
               <Box
-                marginRight={3}
-                height="30px"
-                width="80px"
                 onClick={(event) => event.stopPropagation()}
+                display={isPreview ? "none" : "flex"}
               >
-                <FollowButton
-                  userIdToFollow={userId}
-                  colorSchemeEnabled={true}
-                  onFollow={handleRefresh}
-                />
+                {currentUserId !== userId ? (
+                  <Box marginRight={3} height="30px" width="80px">
+                    <FollowButton
+                      userIdToFollow={userId}
+                      colorSchemeEnabled={true}
+                      onFollow={handleRefresh}
+                    />
+                  </Box>
+                ) : (
+                  <EntryForm
+                    displayComponent={
+                      <EditIcon
+                        marginRight={4}
+                        marginBottom={1}
+                        _hover={{
+                          opacity: 0.7,
+                        }}
+                      />
+                    }
+                    entryData={{
+                      _id: entryId,
+                      commentDisabled,
+                      text,
+                      title,
+                      timestamp: date,
+                    }}
+                  />
+                )}
               </Box>
             </HStack>
           </GridItem>

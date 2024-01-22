@@ -22,10 +22,10 @@ import FormInput from "./FormInput";
 import TextAreaInput from "./TextAreaInput";
 import AppButton from "./AppButton";
 import EntryCard from "./EntryCard";
-import Entry from "../entities/Entry";
-import { getUser } from "../hooks/useUsers";
-import { createEntry } from "../hooks/useEntries";
+import Entry, { EntryDataToEdit } from "../entities/Entry";
+import { createEntry, editEntry } from "../hooks/useEntries";
 import colors from "../config/colors";
+import useAppStore from "../store";
 
 const schema = z.object({
   title: z.string(),
@@ -37,15 +37,17 @@ type FormData = z.infer<typeof schema>;
 
 interface Props {
   displayComponent?: ReactNode;
+  entryData?: EntryDataToEdit;
 }
 
-const EntryForm = ({ displayComponent }: Props) => {
+const EntryForm = ({ displayComponent, entryData }: Props) => {
   const [showPreview, setShowPreview] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
-  const currentUser = getUser(); // Gotten from state
+  const currentUser = useAppStore().currentUser; // Gotten from state
   const maxTitleLength = 40;
   const maxTextLength = 2048;
+  const isEdit = !!entryData?._id;
 
   const {
     register,
@@ -71,17 +73,34 @@ const EntryForm = ({ displayComponent }: Props) => {
     text,
     commentDisabled,
   }: z.infer<typeof schema>) => {
-    await createEntry({
-      title,
-      text,
-      userId: currentUser._id,
-      commentDisabled,
-      timestamp,
-    });
+    if (isEdit) {
+      return await editEntry({
+        _id: entryData._id,
+        title,
+        text,
+        commentDisabled,
+        timestamp,
+      });
+    } else {
+      return await createEntry({
+        title,
+        text,
+        userId: currentUser._id,
+        commentDisabled,
+        timestamp,
+      });
+    }
   };
 
   useEffect(() => {
     setShowPreview(false);
+
+    if (isEdit) {
+      setValue("title", entryData.title);
+      setValue("text", entryData.text);
+      setValue("commentDisabled", entryData.commentDisabled);
+      timestamp = entryData.timestamp;
+    }
   }, []);
 
   return (
@@ -123,7 +142,9 @@ const EntryForm = ({ displayComponent }: Props) => {
           <ModalCloseButton />
           <ModalHeader>
             <Text fontFamily={"sans-serif"} fontSize={"md"}>
-              Begin Your Entry: What's on Your Mind?
+              {!isEdit
+                ? "Begin Your Entry: What's on Your Mind?"
+                : "Edit Entry"}
             </Text>
           </ModalHeader>
 
@@ -170,7 +191,11 @@ const EntryForm = ({ displayComponent }: Props) => {
                 <Box width={"100%"}>
                   <TextAreaInput
                     type="text"
-                    label="Today's story starts here..."
+                    label={
+                      !isEdit
+                        ? "Today's story starts here..."
+                        : "Your story started here..."
+                    }
                     placeholder="What's up?...."
                     register={register("text")}
                     isRequired={true}
@@ -204,6 +229,7 @@ const EntryForm = ({ displayComponent }: Props) => {
                   </Text>
                 </Box>
 
+                {/* Refactor to use register */}
                 <RadioGroup
                   width={"100%"}
                   marginTop={-1}
@@ -256,6 +282,7 @@ const EntryForm = ({ displayComponent }: Props) => {
                     timestamp,
                     likes: [],
                   }}
+                  isEdit={!!isEdit}
                   handleClose={() => setShowPreview(false)}
                   handleSubmit={handleSubmit(onSubmit)}
                 />
@@ -270,12 +297,14 @@ const EntryForm = ({ displayComponent }: Props) => {
 
 interface EntryPreviewModalProps {
   entryData: Entry;
+  isEdit: boolean;
   handleClose: () => void;
   handleSubmit: () => void;
 }
 
 const EntryPreviewModal = ({
   entryData,
+  isEdit,
   handleClose,
   handleSubmit,
 }: EntryPreviewModalProps) => {
@@ -296,11 +325,12 @@ const EntryPreviewModal = ({
     >
       <ModalOverlay />
       <ModalContent backgroundColor={useColorModeValue("gray.200", "gray.800")}>
+        <ModalCloseButton />
         <ModalHeader>Preview</ModalHeader>
 
         <ModalBody>
           <Box boxSize={"350px"} margin={"0 auto"}>
-            <EntryCard entryData={entryData} />
+            <EntryCard entryData={entryData} isPreview={true} />
           </Box>
         </ModalBody>
 
@@ -315,7 +345,12 @@ const EntryPreviewModal = ({
               fontSize="sm"
               width="100px"
             />
-            <AppButton text="Post" handleClick={handleSubmit} />
+            <AppButton
+              fontSize="sm"
+              width="100px"
+              text={isEdit ? "Save" : "Post"}
+              handleClick={handleSubmit}
+            />
           </HStack>
         </ModalFooter>
       </ModalContent>
