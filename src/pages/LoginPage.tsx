@@ -1,6 +1,6 @@
 import { Box, Image, Text, VStack, useColorModeValue } from "@chakra-ui/react";
-import logo from "../assets/1DE.png";
-import backgroundImage from "../assets/8.jpg";
+import logo from "../assets/logo-black.png";
+import backgroundImage from "../assets/backgroundimage8.jpg";
 import colors from "../config/colors";
 import LoginForm from "../components/LoginForm";
 

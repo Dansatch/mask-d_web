@@ -27,7 +27,7 @@ import SearchInput from "./SearchInput";
 import ProfileAvatar from "./ProfileAvatar";
 import EntryForm from "./EntryForm";
 import NotificationPanel from "./NotificationPanel";
-import logo from "../assets/1DE-removebg-preview.png";
+import logo from "../assets/logo-nobg.png";
 import colors from "../config/colors";
 import useAppStore from "../store";
 

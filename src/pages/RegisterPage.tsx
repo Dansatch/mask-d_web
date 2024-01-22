@@ -1,5 +1,5 @@
 import { Box, Text, VStack, useColorModeValue } from "@chakra-ui/react";
-import backgroundImage from "../assets/8.jpg";
+import backgroundImage from "../assets/backgroundimage8.jpg";
 import colors from "../config/colors";
 import RegisterForm from "../components/RegisterForm";
 import useWindowHeight from "../hooks/useWindowHeight";
