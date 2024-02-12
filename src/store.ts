@@ -1,6 +1,5 @@
 import { StoreApi, UseBoundStore, create } from "zustand";
 import User from "./entities/User";
-import { getUser } from "./hooks/useUsers";
 
 interface EntryQuery {
   authorId?: string;
@@ -30,9 +29,11 @@ interface UserQueryStore {
 
 interface AppStore {
   currentUser: User;
+  isLoggedIn: boolean;
   entryQueryStore: UseBoundStore<StoreApi<EntryQueryStore>>;
   userQueryStore: UseBoundStore<StoreApi<UserQueryStore>>;
-  setCurrentUser: (user: User) => void;
+  setCurrentUser: (user: User | undefined) => void;
+  setLoggedIn: (value: boolean) => void;
 }
 
 const useEntryQueryStore = create<EntryQueryStore>((set) => ({
@@ -54,20 +55,22 @@ const useUserQueryStore = create<UserQueryStore>((set) => ({
     set((store) => ({ userQuery: { ...store.userQuery, sortOrder } })),
 }));
 
-const dummyUser = getUser();
-// const placeholderUserData = {
-//   _id: "",
-//   username: "",
-//   password: "",
-//   following: [],
-//   followers: [],
-//   timestamp: new Date(),
-// };
+const placeholderUserData: User = {
+  _id: "",
+  username: "",
+  following: [],
+  followers: [],
+  isPrivate: false,
+  timestamp: new Date(),
+};
+
 const useAppStore = create<AppStore>((set) => ({
-  currentUser: dummyUser,
+  currentUser: placeholderUserData,
+  isLoggedIn: false,
   entryQueryStore: useEntryQueryStore,
   userQueryStore: useUserQueryStore,
   setCurrentUser: (user) => set(() => ({ currentUser: user })),
+  setLoggedIn: (value) => set(() => ({ isLoggedIn: value })),
 }));
 
 export default useAppStore;

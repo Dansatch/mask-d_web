@@ -1,10 +1,6 @@
-import { getUser } from "./useUsers";
+import { isLoggedIn } from "./useUsers";
 
-const useAuth = () => {
-  // Auth check and return appropriately
-
-  // return undefined;
-  return getUser();
-};
+// Auth check and return appropriately
+const useAuth = async () => await isLoggedIn();
 
 export default useAuth;

@@ -3,7 +3,6 @@ import User from "../entities/User";
 export default <User[]>[
   {
     _id: "admin",
-    password: "Abc123..",
     username: "redadmin23",
     isPrivate: false,
     followers: [],
@@ -12,7 +11,6 @@ export default <User[]>[
   },
   {
     _id: "user1",
-    password: "Password123",
     username: "redDoe129",
     isPrivate: true,
     followers: [],
@@ -21,7 +19,6 @@ export default <User[]>[
   },
   {
     _id: "user2",
-    password: "SecurePwd456",
     username: "tallHippo91",
     isPrivate: false,
     followers: ["redadmin23"],
@@ -30,7 +27,6 @@ export default <User[]>[
   },
   {
     _id: "user3",
-    password: "StrongPassword789",
     username: "rudeHorse7",
     isPrivate: true,
     followers: ["john_doe"],
@@ -39,7 +35,6 @@ export default <User[]>[
   },
   {
     _id: "user4",
-    password: "Secret123",
     username: "realCow0",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -48,7 +43,6 @@ export default <User[]>[
   },
   {
     _id: "user5",
-    password: "Secret123",
     username: "sadReindeer291",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -57,7 +51,6 @@ export default <User[]>[
   },
   {
     _id: "user6",
-    password: "fatSquid72password",
     username: "fatSquid72",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -66,7 +59,6 @@ export default <User[]>[
   },
   {
     _id: "user7",
-    password: "Secret123",
     username: "powerfulhyena291",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -75,7 +67,6 @@ export default <User[]>[
   },
   {
     _id: "user8",
-    password: "Secret123",
     username: "cunnyDog829",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -84,7 +75,6 @@ export default <User[]>[
   },
   {
     _id: "user9",
-    password: "Secret123",
     username: "loyalFish914",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -93,7 +83,6 @@ export default <User[]>[
   },
   {
     _id: "user10",
-    password: "Secret123",
     username: "sexyTarrantula754",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -102,7 +91,6 @@ export default <User[]>[
   },
   {
     _id: "user11",
-    password: "Secret123",
     username: "fastSquirrel619",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -111,7 +99,6 @@ export default <User[]>[
   },
   {
     _id: "user12",
-    password: "Secret123",
     username: "jaggedRacoon789",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],
@@ -120,7 +107,6 @@ export default <User[]>[
   },
   {
     _id: "user13",
-    password: "Secret123",
     username: "slimShark778",
     isPrivate: false,
     followers: ["john_doe", "jane_doe"],

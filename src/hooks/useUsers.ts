@@ -5,8 +5,10 @@ import {
 } from "@tanstack/react-query";
 import users from "../data/users";
 import User, { UserDataToSubmit } from "../entities/User";
+import AuthService from "../services/authService";
 import useAppStore from "../store";
 
+const authService = new AuthService();
 const PAGE_SIZE = 10;
 
 // Get parameters from useAppStore().userQueryStore().userQuery
@@ -52,20 +54,39 @@ export const registerUser = async (data: UserDataToSubmit) => {
   return Promise.resolve(console.log("Created " + newUser.username));
 };
 
-export const loginUser = async (data: UserDataToSubmit) => {
-  // Confirm username exists and password matches
+export const useLoginUser = () => {
+  const setLoggedIn = useAppStore().setLoggedIn;
+  const setCurrentUser = useAppStore().setCurrentUser;
 
-  const userData = getUser(); // Gotten from backend with auth token
-  useAppStore().setCurrentUser(userData); // Set currentUser in zustand
+  const login = async (data: UserDataToSubmit) => {
+    try {
+      const user = await authService.login(data);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      setCurrentUser(user);
+      setLoggedIn(true);
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
 
-  return Promise.resolve(console.log(data.username + " logged in"));
+  const logout = async () => {
+    try {
+      await authService.logout();
+      setLoggedIn(false);
+      setCurrentUser(undefined);
+      localStorage.removeItem("currentUser");
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
+  return {
+    login,
+    logout,
+  };
 };
 
-export const logoutUser = async () => {
-  // Delete user cookie data
-  // Delete user state data
-  return Promise.resolve(console.log("User logged out successfully"));
-};
+export const isLoggedIn = async () => await authService.checkLogin();
 
 export const updateUserPassword = async ({
   oldPassword,

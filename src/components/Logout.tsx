@@ -1,18 +1,23 @@
-import { logoutUser } from "../hooks/useUsers";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useLoginUser } from "../hooks/useUsers";
 
 const Logout = () => {
   const navigate = useNavigate();
+  const { logout } = useLoginUser();
 
   const handleLogout = async () => {
-    await logoutUser();
-    navigate("/login");
+    await logout();
+    navigate("/login"); // navigate to login
   };
 
   useEffect(() => {
-    handleLogout();
+    (async () => {
+      await handleLogout();
+    })();
   }, []);
+
+  return <div />;
 };
 
 export default Logout;

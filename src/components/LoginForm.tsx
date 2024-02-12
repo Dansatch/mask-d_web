@@ -1,4 +1,4 @@
-import { Checkbox, HStack, Link, VStack } from "@chakra-ui/react";
+import { Checkbox, HStack, Link, VStack, useToast } from "@chakra-ui/react";
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 import FormInput from "./FormInput";
 import AppButton from "./AppButton";
-import { loginUser } from "../hooks/useUsers";
+import { useLoginUser } from "../hooks/useUsers";
 
 const schema = z.object({
   username: z.string({ required_error: "Username cannot be empty" }),
@@ -21,12 +21,38 @@ const LoginForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const toast = useToast();
   const navigate = useNavigate();
+  const { login } = useLoginUser();
 
   const onSubmit = async (data: FieldValues) => {
-    return await loginUser({
-      username: data.username,
-      password: data.password,
+    async function handleUserLogin() {
+      await login({
+        username: data.username,
+        password: data.password,
+      });
+      navigate("/");
+    }
+
+    toast.promise(handleUserLogin(), {
+      success: () => ({
+        title: "Welcome back",
+        description: `Welcome back ${data.username}`,
+        position: "top-right",
+        duration: 3000,
+        isClosable: true,
+      }),
+      error: (errorMessage) => ({
+        title: "Login failed",
+        description: `${errorMessage}`,
+        position: "top-right",
+        isClosable: true,
+      }),
+      loading: {
+        title: "Logging in...",
+        description: "Please wait...",
+        position: "top-right",
+      },
     });
   };
 

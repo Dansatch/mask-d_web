@@ -1,7 +1,6 @@
 export default interface User {
   _id: string;
   username: string;
-  password: string;
   isPrivate: boolean;
   followers: string[];
   following: string[];
