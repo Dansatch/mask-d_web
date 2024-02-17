@@ -15,7 +15,7 @@ import LikeButton from "./LikeButton";
 import Comment from "../entities/Comment";
 import peopleCount from "../utils/peopleCount";
 import { useCommentLikes } from "../hooks/useComments";
-import { getUserByUserId } from "../hooks/useUsers";
+import { useUser } from "../hooks/useUsers";
 import ProfileAvatar from "./ProfileAvatar";
 import useAppStore from "../store";
 
@@ -40,12 +40,8 @@ const CommentBody = ({ comment }: Props) => {
   useEffect(() => {
     const getAuthorName = async () => {
       try {
-        const userData = await getUserByUserId(comment.userId);
-
-        // Assuming userData contains the author's name
-        if (userData && userData.username) {
-          setCommentAuthorName(userData.username);
-        }
+        const res = await useUser(comment.userId);
+        if (res.data) setCommentAuthorName(res.data.username);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

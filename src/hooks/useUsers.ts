@@ -1,57 +1,71 @@
 import {
   useInfiniteQuery,
-  useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import users from "../data/users";
 import User, { UserDataToSubmit } from "../entities/User";
 import AuthService from "../services/authService";
 import useAppStore from "../store";
+import UserService from "../services/userService";
+import { InfiniteFetchResponse } from "../services/api-client";
 
 const authService = new AuthService();
+const userService = new UserService();
 const PAGE_SIZE = 10;
 
-// Get parameters from useAppStore().userQueryStore().userQuery
 const useUsers = () => {
-  const fetchUsers = (pageParam: number) => {
-    const startIndex = (pageParam - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
-    const paginatedData = users.slice(startIndex, endIndex);
+  const userQuery = useAppStore().userQueryStore().userQuery;
 
-    return Promise.resolve(paginatedData);
+  const fetchUsers = (pageParam: number) => {
+    return userService.getAll({
+      params: {
+        searchText: userQuery.searchText,
+        sortOrder: userQuery.sortOrder,
+        page: pageParam,
+        pageSize: PAGE_SIZE,
+      },
+    });
   };
 
-  return useInfiniteQuery<User[], Error>({
-    queryKey: ["users"],
+  return useInfiniteQuery<InfiniteFetchResponse<User>, Error>({
+    queryKey: ["users", userQuery],
     queryFn: ({ pageParam }) => fetchUsers(Number(pageParam)),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage[lastPage.length - 1] &&
-        lastPage[lastPage.length - 1]._id !== users[users.length - 1]._id
+      return lastPage.page < lastPage.totalPages
         ? allPages.length + 1
         : undefined;
     },
   });
 };
 
-export const getUser = () => {
-  return users[1];
+export const useUser = (username: string) => {
+  return useQuery({
+    queryKey: ["user", username],
+    queryFn: () => userService.get(username),
+  });
 };
 
-export const registerUser = async (data: UserDataToSubmit) => {
-  const newUser: User = {
-    ...data,
-    isPrivate: data?.isPrivate || false,
-    _id: data.username + "id",
-    timestamp: new Date(),
-    followers: [],
-    following: [],
+export const getUserByUserId = async (userId: string) => {
+  return Promise.resolve(users.find((c) => c._id === userId));
+};
+
+export const useRegisterUser = () => {
+  const setLoggedIn = useAppStore().setLoggedIn;
+  const setCurrentUser = useAppStore().setCurrentUser;
+
+  return async (data: UserDataToSubmit) => {
+    try {
+      const user = await userService.register(data);
+
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      setCurrentUser(user);
+      setLoggedIn(true);
+    } catch (error: any) {
+      throw new Error(error);
+    }
   };
-
-  users.push(newUser); // Add user to dummy database
-  useAppStore().setCurrentUser(newUser); // Set currentUser in zustand
-
-  return Promise.resolve(console.log("Created " + newUser.username));
 };
 
 export const useLoginUser = () => {
@@ -88,100 +102,70 @@ export const useLoginUser = () => {
 
 export const isLoggedIn = async () => await authService.checkLogin();
 
-export const updateUserPassword = async ({
-  oldPassword,
-  newPassword,
-}: {
-  oldPassword: string;
-  newPassword: string;
-}) => {
-  return Promise.resolve(
-    console.log(`${oldPassword} changed to ${newPassword}`)
-  );
-};
-
-export const updateUserPrivacy = async ({
-  isPrivate,
-}: {
-  isPrivate: boolean;
-}) => {
-  let newPrivacy: string;
-  if (isPrivate) newPrivacy = "Private";
-  else newPrivacy = "Public";
-
-  return Promise.resolve(console.log(`User privacy updated to ${newPrivacy}`));
-};
-
-export const getUserByUsername = async (username: string) => {
-  return Promise.resolve(users.find((c) => c.username === username));
-};
-
-export const getUserByUserId = async (userId: string) => {
-  return Promise.resolve(users.find((c) => c._id === userId));
-};
-
-// Edit invalidating queryKey
-export const useFollowUser = (
-  currentUserId: string,
-  selectedUserId: string
-) => {
+export const useUserUpdate = () => {
   const queryClient = useQueryClient();
+  const setCurrentUser = useAppStore().setCurrentUser;
+  const currentUser = useAppStore().currentUser;
 
-  const followMutation = useMutation({
-    // Should be an object **suggestion
-    mutationFn: () => followUser(currentUserId, selectedUserId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
-  });
+  const updateUserPassword = async ({
+    oldPassword,
+    newPassword,
+  }: {
+    oldPassword: string;
+    newPassword: string;
+  }) => {
+    try {
+      return await userService.updatePassword({ oldPassword, newPassword });
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
 
-  const unfollowMutation = useMutation({
-    mutationFn: () => unfollowUser(currentUserId, selectedUserId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
-  });
+  const updateUserPrivacy = async ({ isPrivate }: { isPrivate: boolean }) => {
+    try {
+      await userService.updatePrivacy(isPrivate);
+
+      queryClient.invalidateQueries(); // Clear cache
+
+      localStorage.setItem(
+        "currentUser",
+        JSON.stringify({ ...currentUser, isPrivate })
+      ); // Update user in storage
+
+      setCurrentUser({ ...currentUser, isPrivate }); // Update user in state
+    } catch (error: any) {
+      throw new Error(error);
+    }
+  };
+
+  return {
+    updateUserPassword,
+    updateUserPrivacy,
+  };
+};
+
+export const useFollowUser = (selectedUserId: string) => {
+  const queryClient = useQueryClient();
+  const setCurrentUser = useAppStore().setCurrentUser;
 
   const handleFollow = async () => {
-    if (await isFollowing(currentUserId, selectedUserId))
-      await unfollowMutation.mutateAsync();
-    else await followMutation.mutateAsync();
+    let updatedUser: User;
+
+    if (isFollowing(selectedUserId))
+      updatedUser = await userService.unfollowUser(selectedUserId);
+    else updatedUser = await userService.followUser(selectedUserId);
+
+    // Clean up
+    queryClient.invalidateQueries();
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+    setCurrentUser(updatedUser);
   };
 
   return handleFollow;
 };
 
-const followUser = async (currentUserId: string, userIdToFollow: string) => {
-  let currentUser = await getUserByUserId(currentUserId);
-  const userToFollow = await getUserByUserId(userIdToFollow);
-
-  currentUser?.following.push(userIdToFollow);
-  userToFollow?.followers.push(currentUserId);
-
-  return Promise.resolve();
-};
-
-const unfollowUser = async (
-  currentUserId: string,
-  userIdToUnfollow: string
-) => {
-  const currentUser = await getUserByUserId(currentUserId);
-  const userToUnfollow = await getUserByUserId(userIdToUnfollow);
-
-  if (currentUser)
-    currentUser.following = currentUser.following.filter(
-      (userId) => userId !== userIdToUnfollow
-    );
-
-  if (userToUnfollow)
-    userToUnfollow.followers = userToUnfollow.followers.filter(
-      (userId) => userId !== currentUserId
-    );
-
-  return Promise.resolve();
-};
-
-export const isFollowing = async (
-  currentUserId: string,
-  selectedUserId: string
-) => {
-  const currentUser = await getUserByUserId(currentUserId);
+export const isFollowing = (selectedUserId: string) => {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "");
   return currentUser?.following.includes(selectedUserId);
 };
 

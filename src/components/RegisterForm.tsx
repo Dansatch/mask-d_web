@@ -17,6 +17,7 @@ import {
   Text,
   VStack,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
@@ -26,10 +27,10 @@ import { generateUsername } from "friendly-username-generator";
 import { RepeatIcon } from "@chakra-ui/icons";
 
 import FormInput from "./FormInput";
-import colors from "../config/colors";
-import AppButton from "./AppButton";
-import { registerUser } from "../hooks/useUsers";
 import ProfileAvatar from "./ProfileAvatar";
+import AppButton from "./AppButton";
+import { useRegisterUser } from "../hooks/useUsers";
+import colors from "../config/colors";
 
 const schema = z
   .object({
@@ -56,7 +57,9 @@ type FormData = z.infer<typeof schema>;
 const RegisterForm = () => {
   const [isConfirmed, setConfirmed] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
   const navigate = useNavigate();
+  const registerUser = useRegisterUser();
 
   const {
     register,
@@ -74,10 +77,34 @@ const RegisterForm = () => {
   const onSubmit = async (data: FieldValues) => {
     if (!isConfirmed) return onOpen();
 
-    return await registerUser({
-      username: data.username,
-      password: data.password,
-      isPrivate: data.isPrivate,
+    async function handleUserRegistration() {
+      await registerUser({
+        username: data.username,
+        password: data.password,
+        isPrivate: data.isPrivate,
+      });
+      navigate("/");
+    }
+
+    return toast.promise(handleUserRegistration(), {
+      success: () => ({
+        title: "Account created successful",
+        description: `Welcome ${data.username}`,
+        position: "top-right",
+        duration: 3000,
+        isClosable: true,
+      }),
+      error: (errorMessage) => ({
+        title: "Account creation failed",
+        description: `${errorMessage}`,
+        position: "top-right",
+        isClosable: true,
+      }),
+      loading: {
+        title: "Creating account...",
+        description: "Please wait...",
+        position: "top-right",
+      },
     });
   };
 

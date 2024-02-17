@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import {
   Card,
@@ -19,7 +19,7 @@ import PopUpAnimationBox from "./PopUpAnimationBox";
 import FollowButton from "./FollowButton";
 import EntryForm from "./EntryForm";
 import Entry from "../entities/Entry";
-import { getUserByUserId } from "../hooks/useUsers";
+import { useUser } from "../hooks/useUsers";
 import { useEntryLikes } from "../hooks/useEntries";
 import { getCommentsCount } from "../hooks/useComments";
 import useRefresh from "../hooks/useRefresh";
@@ -46,7 +46,7 @@ const EntryCard = ({
   isPreview,
 }: Props) => {
   const currentUserId = useAppStore().currentUser._id;
-  const [authorName, setAuthorName] = useState("");
+  const authorName = useUser(userId).data?.username;
   const isLiked = likes?.includes(currentUserId); // refactor out
   const handleRefresh = useRefresh();
   const backgroundColor = useColorModeValue("", "black");
@@ -66,23 +66,6 @@ const EntryCard = ({
     if (isLiked) await unlikeEntry();
     else await likeEntry();
   };
-
-  useEffect(() => {
-    const getAuthorName = async () => {
-      try {
-        const userData = await getUserByUserId(userId);
-
-        // Assuming userData contains the author's name
-        if (userData && userData.username) {
-          setAuthorName(userData.username);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    getAuthorName();
-  }, []);
 
   return (
     <Card
@@ -113,7 +96,7 @@ const EntryCard = ({
             alignItems={"center"}
           >
             <HStack width={"100%"} spacing={1} paddingX={1}>
-              <ProfileAvatar boxSize="35px" username={authorName} />
+              <ProfileAvatar boxSize="35px" username={authorName || ""} />
 
               <Text
                 fontSize={"md"}
@@ -135,7 +118,7 @@ const EntryCard = ({
                 {currentUserId !== userId ? (
                   <Box marginRight={3} height="30px" width="80px">
                     <FollowButton
-                      userIdToFollow={userId}
+                      selectedUserId={userId}
                       colorSchemeEnabled={true}
                       onFollow={handleRefresh}
                     />

@@ -28,7 +28,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import FormInput from "./FormInput";
 import AppButton from "./AppButton";
-import { updateUserPassword, updateUserPrivacy } from "../hooks/useUsers";
+import { useUserUpdate } from "../hooks/useUsers";
 import colors from "../config/colors";
 import useAppStore from "../store";
 
@@ -66,6 +66,7 @@ const PasswordUpdate = ({ handleClose }: UpdateProps) => {
     reset,
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(passwordUpdateSchema) });
+  const { updateUserPassword } = useUserUpdate();
 
   const closeModal = () => {
     handleClose();
@@ -83,16 +84,19 @@ const PasswordUpdate = ({ handleClose }: UpdateProps) => {
           title: "Success",
           description: "Your password has been updated.",
           position: "top-right",
+          isClosable: true,
         },
-        error: {
+        error: (errorMessage) => ({
           title: "Password update failed",
-          description: "Something went wrong, pls try again later",
+          description: `${errorMessage}`,
           position: "top-right",
-        }, // refactor error from backend
+          isClosable: true,
+        }),
         loading: {
           title: "Password updating...",
           description: "Please wait...",
           position: "top-right",
+          isClosable: true,
         },
       }
     );
@@ -235,6 +239,7 @@ const PrivacyUpdate = ({ handleClose }: UpdateProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement>(null);
   const toast = useToast();
+  const { updateUserPrivacy } = useUserUpdate();
 
   const isPrivate = useAppStore().currentUser.isPrivate;
   const userCurrentPrivacy = isPrivate ? "Private" : "Public";
@@ -255,12 +260,14 @@ const PrivacyUpdate = ({ handleClose }: UpdateProps) => {
           title: "Success",
           description: `Your privacy has been set to ${userUpdatedPrivacy}.`,
           position: "top-right",
+          isClosable: true,
         },
-        error: {
+        error: (errorMessage) => ({
           title: "Privacy update failed",
-          description: "Something went wrong, pls try again later",
+          description: `${errorMessage}`,
           position: "top-right",
-        }, // refactor error from backend
+          isClosable: true,
+        }),
         loading: {
           title: `Privacy updating to ${userUpdatedPrivacy}...`,
           description: "Please wait...",

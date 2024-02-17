@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, HStack, Text, VStack } from "@chakra-ui/layout";
-import User from "../entities/User";
 import { Card, CardBody } from "@chakra-ui/card";
 import { useColorModeValue } from "@chakra-ui/color-mode";
-import { useNavigate } from "react-router-dom";
 
 import ProfileAvatar from "./ProfileAvatar";
 import FollowButton from "./FollowButton";
+import User from "../entities/User";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
 import useRefresh from "../hooks/useRefresh";
 import peopleCount from "../utils/peopleCount";
@@ -68,7 +68,7 @@ const UserCard = ({ userData }: Props) => {
               onClick={(event) => event.stopPropagation()}
             >
               <FollowButton
-                userIdToFollow={userData._id}
+                selectedUserId={userData._id}
                 colorSchemeEnabled={true}
                 onFollow={handleRefresh}
               />

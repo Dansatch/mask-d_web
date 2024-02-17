@@ -22,29 +22,24 @@ import FollowButton from "./FollowButton";
 import EntryGrid from "./EntryGrid";
 import PrivacyBadge from "./PrivacyBadge";
 import ProfileEdit from "./ProfileEdit";
-import User from "../entities/User";
 import { getTotalEntriesByUserName } from "../hooks/useEntries";
-import { getUserByUsername } from "../hooks/useUsers";
+import { useUser } from "../hooks/useUsers";
 import useRefresh from "../hooks/useRefresh";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 import useAppStore from "../store";
 
 const UserProfile = () => {
-  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
+  const { username: selectedUsername } = useParams();
+  const selectedUser = useUser(selectedUsername || "").data;
   const [entriesCount, setEntriesCount] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
   const handleRefresh = useRefresh();
   const currentUser = useAppStore().currentUser;
-  const { username: selectedUsername } = useParams();
   const navigate = useNavigate();
   const hideEntries =
     selectedUser?.isPrivate && selectedUser?._id !== currentUser._id;
-
-  async function getSelectedUser() {
-    setSelectedUser(await getUserByUsername(selectedUsername || ""));
-  }
 
   async function getTotalEntries() {
     selectedUser &&
@@ -52,7 +47,6 @@ const UserProfile = () => {
   }
 
   useEffect(() => {
-    getSelectedUser();
     getTotalEntries();
     onOpen();
   }, []);
@@ -132,7 +126,7 @@ const UserProfile = () => {
                   <Box height="30px" width="120px">
                     {selectedUser && (
                       <FollowButton
-                        userIdToFollow={selectedUser._id}
+                        selectedUserId={selectedUser._id}
                         onFollow={handleRefresh}
                       />
                     )}

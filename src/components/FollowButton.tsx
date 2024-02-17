@@ -4,35 +4,38 @@ import AppButton from "./AppButton";
 import useAppStore from "../store";
 
 interface Props {
-  userIdToFollow: string;
+  selectedUserId: string;
   colorSchemeEnabled?: boolean;
   onFollow?: () => void;
 }
 
 const FollowButton = ({
-  userIdToFollow,
+  selectedUserId,
   colorSchemeEnabled,
   onFollow = () => {},
 }: Props) => {
   const currentUserId = useAppStore().currentUser._id;
   const [isFollowed, setIsFollowed] = useState(false);
-  const handleFollow = useFollowUser(currentUserId, userIdToFollow);
+  const handleFollow = useFollowUser(selectedUserId);
 
   useEffect(() => {
-    async function checkFollowing() {
-      const isCurrentlyFollowing = await isFollowing(
-        currentUserId,
-        userIdToFollow
-      );
+    function checkFollowing() {
+      const isCurrentlyFollowing = isFollowing(selectedUserId);
       setIsFollowed(Boolean(isCurrentlyFollowing));
     }
     checkFollowing();
-  }, [currentUserId, userIdToFollow]);
+  }, [selectedUserId]);
 
   const handleClick = async () => {
-    await handleFollow();
-    setIsFollowed(!isFollowed); // Toggle the follow status after the button click
-    onFollow();
+    try {
+      setIsFollowed(!isFollowed); // Toggle the follow status after the button click
+      onFollow();
+
+      await handleFollow();
+    } catch (err: any) {
+      err;
+      // console.log("An error occured");
+    }
   };
 
   return (
@@ -41,7 +44,7 @@ const FollowButton = ({
       fontSize="xs"
       colorSchemeEnabled={colorSchemeEnabled}
       handleClick={handleClick}
-      isDisabled={currentUserId === userIdToFollow}
+      isDisabled={currentUserId === selectedUserId}
     />
   );
 };

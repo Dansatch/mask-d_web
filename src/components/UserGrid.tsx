@@ -15,7 +15,7 @@ const UserGrid = () => {
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
 
   const fetchedUsersCount =
-    users?.pages.reduce((total, page) => total + page.length, 0) || 0;
+    users?.pages.reduce((total, page) => total + page.data.length, 0) || 0;
 
   if (!fetchedUsersCount)
     return (
@@ -42,7 +42,7 @@ const UserGrid = () => {
 
           {users?.pages.map((page, index) => (
             <React.Fragment key={index}>
-              {page.map((user) => (
+              {page.data.map((user) => (
                 <CardContainer key={user._id}>
                   <UserCard userData={user} />
                 </CardContainer>
