@@ -11,3 +11,8 @@ export interface CommentDataToSubmit {
   text: string;
   entryId: string;
 }
+
+export interface CommentDataToEdit {
+  commentId: string;
+  text: string;
+}

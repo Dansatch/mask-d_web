@@ -3,97 +3,95 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-
-import comments from "../data/comments";
-import Comment, { CommentDataToSubmit } from "../entities/Comment";
-import useAppStore from "../store";
+import { InfiniteFetchResponse } from "../services/api-client";
+import CommentService from "../services/commentService";
+import Comment, {
+  CommentDataToEdit,
+  CommentDataToSubmit,
+} from "../entities/Comment";
 
 const PAGE_SIZE = 10;
+const commentService = new CommentService();
 
 const useComments = (entryId: string) => {
-  const fetchComments = (pageParam: number) => {
-    const startIndex = (pageParam - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
-    const paginatedData = comments.slice(startIndex, endIndex);
-
-    return Promise.resolve(paginatedData);
-  };
-
-  return useInfiniteQuery<Comment[], Error>({
+  return useInfiniteQuery<InfiniteFetchResponse<Comment>, Error>({
     queryKey: ["comments", entryId],
-    queryFn: ({ pageParam }) => fetchComments(Number(pageParam)),
+    queryFn: ({ pageParam }) =>
+      commentService.getAll(entryId, {
+        params: {
+          page: pageParam,
+          pageSize: PAGE_SIZE,
+        },
+      }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage[lastPage.length - 1]._id &&
-        lastPage[lastPage.length - 1]._id !== comments[comments.length - 1]._id
+      return lastPage.page < lastPage.totalPages
         ? allPages.length + 1
         : undefined;
     },
   });
 };
 
-const useComment = async (commentId: string) => {
-  return Promise.resolve(comments.find((c) => c._id === commentId));
+export const getCommentCount = async (entryId: string) => {
+  return await commentService.getCommentCount(entryId);
 };
 
-export const getCommentsCount = (entryId: string) => {
-  // Get by contentId
-  entryId;
-  return comments.length;
-};
-
-export const createComment = async (commentData: CommentDataToSubmit) => {
-  const comment: Comment = {
-    _id: "",
-    text: commentData.text,
-    userId: useAppStore().currentUser._id,
-    entryId: commentData.entryId,
-    likes: [],
-    timestamp: new Date(),
-  };
-
-  return Promise.resolve(comments.push(comment));
-};
-
-export const useCommentLikes = (commentId: string, entryId: string) => {
+export const useCommentMutations = () => {
   const queryClient = useQueryClient();
-  const currentUserId = useAppStore().currentUser._id;
+
+  const createMutation = useMutation({
+    mutationFn: (data: CommentDataToSubmit) => commentService.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments"] }),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: (data: CommentDataToEdit) => commentService.edit(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments"] }),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
+  });
 
   const likeMutation = useMutation({
-    mutationFn: (commentId: string) => likeComment(commentId, currentUserId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["comments", entryId] }),
+    mutationFn: (id: string) => commentService.like(id),
+    onSuccess: () => queryClient.invalidateQueries(),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
   });
 
   const unlikeMutation = useMutation({
-    mutationFn: (commentId: string) => unlikeComment(commentId, currentUserId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["comments", entryId] }),
+    mutationFn: (id: string) => commentService.unlike(id),
+    onSuccess: () => queryClient.invalidateQueries(),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
   });
 
-  const handleLike = async () => {
-    await likeMutation.mutateAsync(commentId);
+  const handleCreate = async (data: CommentDataToSubmit) => {
+    await createMutation.mutateAsync(data);
   };
 
-  const handleUnlike = async () => {
-    await unlikeMutation.mutateAsync(commentId);
+  const handleEdit = async (data: CommentDataToEdit) => {
+    await editMutation.mutateAsync(data);
   };
 
-  return {
-    handleLike,
-    handleUnlike,
+  const handleLike = async (id: string) => {
+    await likeMutation.mutateAsync(id);
   };
+
+  const handleUnlike = async (id: string) => {
+    await unlikeMutation.mutateAsync(id);
+  };
+
+  return { handleCreate, handleEdit, handleLike, handleUnlike };
 };
 
-const likeComment = async (commentId: string, currentUserId: string) => {
-  const comment = await useComment(commentId);
-  return comment?.likes.push(currentUserId);
-};
-
-const unlikeComment = async (commentId: string, currentUserId: string) => {
-  currentUserId;
-  const comment = await useComment(commentId);
-  return comment?.likes.pop();
+export const deleteComment = async (commentId: string) => {
+  return await commentService.delete(commentId);
 };
 
 export default useComments;

@@ -23,7 +23,7 @@ const CommentSection = ({ entryId, scrollBehavior }: Props) => {
     <Box paddingTop={2}>
       {comments?.pages.map((page, index) => (
         <React.Fragment key={index}>
-          {page.map((comment, index) => (
+          {page.data.map((comment, index) => (
             <React.Fragment key={index}>
               <CommentBody comment={comment} />
               <Divider marginBottom={1} />

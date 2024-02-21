@@ -12,7 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import FormInput from "./FormInput";
-import { createComment } from "../hooks/useComments";
+import { useCommentMutations } from "../hooks/useComments";
 import colors from "../config/colors";
 
 const schema = z.object({
@@ -27,13 +27,13 @@ interface Props {
 }
 
 const CommentInput = ({ entryId }: Props) => {
+  const { handleCreate: createComment } = useCommentMutations();
+
   const { register, handleSubmit, setFocus, setValue } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
-    console.log(data);
-
     await createComment({
       text: data.text,
       entryId: data.entryId,

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import {
   Card,
@@ -20,7 +21,7 @@ import EntryForm from "./EntryForm";
 import Entry from "../entities/Entry";
 import { useUser } from "../hooks/useUsers";
 import { useEntryMutations } from "../hooks/useEntries";
-import { getCommentsCount } from "../hooks/useComments";
+import { getCommentCount } from "../hooks/useComments";
 import useRefresh from "../hooks/useRefresh";
 import formatDate from "../utils/formatDate";
 import peopleCount from "../utils/peopleCount";
@@ -44,6 +45,7 @@ const EntryCard = ({
   },
   isPreview,
 }: Props) => {
+  const [commentCount, setCommentCount] = useState(0);
   const currentUserId = useAppStore().currentUser._id;
   const authorName = useUser(userId).data?.username;
   const isLiked = likes?.includes(currentUserId); // refactor out
@@ -65,6 +67,19 @@ const EntryCard = ({
     if (isLiked) await unlikeEntry(entryId);
     else await likeEntry(entryId);
   };
+
+  useEffect(() => {
+    const fetchCommentCount = async () => {
+      try {
+        const res = await getCommentCount(entryId);
+        setCommentCount(res.count);
+      } catch (error) {
+        console.error("Error fetching comment count:", error);
+      }
+    };
+
+    fetchCommentCount();
+  }, [entryId]);
 
   return (
     <Card
@@ -262,9 +277,7 @@ const EntryCard = ({
                   marginTop={"1px"}
                   opacity={0.9}
                 >
-                  {commentDisabled
-                    ? "-"
-                    : peopleCount(getCommentsCount(entryId))}
+                  {commentDisabled ? "-" : peopleCount(commentCount)}
                 </Text>
               </Box>
             </HStack>

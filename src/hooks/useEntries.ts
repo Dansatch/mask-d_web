@@ -117,4 +117,8 @@ export const useEntryMutations = () => {
   return { handleCreate, handleEdit, handleLike, handleUnlike };
 };
 
+export const deleteEntry = async (id: string) => {
+  return await entryService.delete(id);
+};
+
 export default useEntries;

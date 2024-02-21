@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -12,11 +11,11 @@ import {
 import TimeBadge from "./TimeBadge";
 import ExpandableText from "./ExpandableText";
 import LikeButton from "./LikeButton";
+import ProfileAvatar from "./ProfileAvatar";
 import Comment from "../entities/Comment";
 import peopleCount from "../utils/peopleCount";
-import { useCommentLikes } from "../hooks/useComments";
+import { useCommentMutations } from "../hooks/useComments";
 import { useUser } from "../hooks/useUsers";
-import ProfileAvatar from "./ProfileAvatar";
 import useAppStore from "../store";
 
 interface Props {
@@ -25,30 +24,17 @@ interface Props {
 
 const CommentBody = ({ comment }: Props) => {
   const currentUserId = useAppStore().currentUser._id;
-  const [commentAuthorName, setCommentAuthorName] = useState("");
+  const commentAuthorName = useUser(comment.userId).data?.username || "";
   const color = useColorModeValue("#3d3d3d", "gray.400");
 
   const isLiked = comment.likes.includes(currentUserId);
   const { handleLike: likeComment, handleUnlike: unlikeComment } =
-    useCommentLikes(comment._id, comment.entryId);
+    useCommentMutations();
 
   const handleLike = async () => {
-    if (isLiked) await unlikeComment();
-    else await likeComment();
+    if (isLiked) await unlikeComment(comment._id);
+    else await likeComment(comment._id);
   };
-
-  useEffect(() => {
-    const getAuthorName = async () => {
-      try {
-        const res = await useUser(comment.userId);
-        if (res.data) setCommentAuthorName(res.data.username);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    getAuthorName();
-  }, []);
 
   return (
     <Grid
