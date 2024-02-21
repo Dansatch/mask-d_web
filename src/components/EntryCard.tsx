@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import {
   Card,
@@ -20,7 +19,7 @@ import FollowButton from "./FollowButton";
 import EntryForm from "./EntryForm";
 import Entry from "../entities/Entry";
 import { useUser } from "../hooks/useUsers";
-import { useEntryLikes } from "../hooks/useEntries";
+import { useEntryMutations } from "../hooks/useEntries";
 import { getCommentsCount } from "../hooks/useComments";
 import useRefresh from "../hooks/useRefresh";
 import formatDate from "../utils/formatDate";
@@ -60,11 +59,11 @@ const EntryCard = ({
 
   // Liking mechanism
   const { handleLike: likeEntry, handleUnlike: unlikeEntry } =
-    useEntryLikes(entryId);
+    useEntryMutations();
 
   const handleLike = async () => {
-    if (isLiked) await unlikeEntry();
-    else await likeEntry();
+    if (isLiked) await unlikeEntry(entryId);
+    else await likeEntry(entryId);
   };
 
   return (

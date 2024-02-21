@@ -21,25 +21,23 @@ const options = [
 ];
 
 const TimeFilterSelector = () => {
-  const [selectedTimeFilterLabel, setTimeFilterLabel] = useState("Today");
-  const selectedTimeFilterValue =
+  const [filterLabel, setFilterLabel] = useState("Today");
+  const filterValue =
     useAppStore().entryQueryStore().entryQuery.timeFilterValue;
-  const setTimeFilterValue = useAppStore().entryQueryStore(
-    (s) => s.setTimeFilterValue
-  );
+  const setFilterValue = useAppStore().entryQueryStore().setTimeFilterValue;
   const currentPath = useLocation().pathname;
   const currentRouteIsUsers = currentPath.startsWith("/users");
 
   useEffect(() => {
     const selectedLabel = options.find(
-      (opt) => opt.value === selectedTimeFilterValue
+      (opt) => opt.value === filterValue
     )?.label;
 
-    setTimeFilterLabel(selectedLabel || "");
-  }, [selectedTimeFilterValue]);
+    setFilterLabel(selectedLabel || "");
+  }, [filterValue]);
 
   useEffect(() => {
-    setTimeFilterValue("today");
+    setFilterValue("today");
   }, []);
 
   return (
@@ -49,12 +47,12 @@ const TimeFilterSelector = () => {
         isDisabled={currentRouteIsUsers}
         rightIcon={<BsChevronDown />}
       >
-        <Text overflow={"hidden"}>{selectedTimeFilterLabel}</Text>
+        <Text overflow={"hidden"}>{filterLabel}</Text>
       </MenuButton>
       <MenuList maxHeight={"70vh"} overflowY={"auto"}>
         {options?.map((option) => (
           <MenuItem
-            onClick={() => setTimeFilterValue(option.value)}
+            onClick={() => setFilterValue(option.value)}
             key={option.value}
           >
             {option.label}

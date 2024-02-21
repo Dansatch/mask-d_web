@@ -4,12 +4,12 @@ import User from "./entities/User";
 interface EntryQuery {
   authorId?: string;
   timeFilterValue?: string;
-  sortOrder?: string;
+  sortOption?: string;
   searchText?: string;
 }
 
 interface UserQuery {
-  sortOrder?: string;
+  sortOption?: string;
   searchText?: string;
 }
 
@@ -18,13 +18,13 @@ interface EntryQueryStore {
   setAuthorId: (userId: string) => void;
   setSearchText: (searchText: string) => void;
   setTimeFilterValue: (filterText: string) => void;
-  setSortOrder: (sortOrder: string) => void;
+  setSortOption: (sortOption: string) => void;
 }
 
 interface UserQueryStore {
   userQuery: UserQuery;
   setSearchText: (searchText: string) => void;
-  setSortOrder: (sortOrder: string) => void;
+  setSortOption: (sortOrder: string) => void;
 }
 
 interface AppStore {
@@ -44,15 +44,19 @@ const useEntryQueryStore = create<EntryQueryStore>((set) => ({
     set((store) => ({
       entryQuery: { ...store.entryQuery, timeFilterValue },
     })),
-  setSortOrder: (sortOrder) =>
-    set((store) => ({ entryQuery: { ...store.entryQuery, sortOrder } })),
+  setSortOption: (sortOption) =>
+    set((store) => ({
+      entryQuery: { ...store.entryQuery, sortOption },
+    })),
 }));
 
 const useUserQueryStore = create<UserQueryStore>((set) => ({
   userQuery: {},
   setSearchText: (searchText) => set(() => ({ userQuery: { searchText } })),
-  setSortOrder: (sortOrder) =>
-    set((store) => ({ userQuery: { ...store.userQuery, sortOrder } })),
+  setSortOption: (sortOption) =>
+    set((store) => ({
+      userQuery: { ...store.userQuery, sortOption },
+    })),
 }));
 
 const placeholderUserData: User = {

@@ -9,7 +9,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
-import { Radio, RadioGroup } from "@chakra-ui/react";
+import { Radio, RadioGroup, useToast } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { useDisclosure } from "@chakra-ui/hooks";
@@ -23,7 +23,7 @@ import TextAreaInput from "./TextAreaInput";
 import AppButton from "./AppButton";
 import EntryCard from "./EntryCard";
 import Entry, { EntryDataToEdit } from "../entities/Entry";
-import { createEntry, editEntry } from "../hooks/useEntries";
+import { useEntryMutations } from "../hooks/useEntries";
 import colors from "../config/colors";
 import useAppStore from "../store";
 
@@ -44,7 +44,10 @@ const EntryForm = ({ displayComponent, entryData }: Props) => {
   const [showPreview, setShowPreview] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const color = useColorModeValue(colors.lightTheme, colors.darkTheme);
+  const { handleCreate: createEntry, handleEdit: editEntry } =
+    useEntryMutations();
   const currentUser = useAppStore().currentUser; // Gotten from state
+  const toast = useToast();
   const maxTitleLength = 40;
   const maxTextLength = 2048;
   const isEdit = !!entryData?._id;
@@ -74,21 +77,67 @@ const EntryForm = ({ displayComponent, entryData }: Props) => {
     commentDisabled,
   }: z.infer<typeof schema>) => {
     if (isEdit) {
-      return await editEntry({
-        _id: entryData._id,
-        title,
-        text,
-        commentDisabled,
-        timestamp,
-      });
+      toast.promise(
+        (async () => {
+          await editEntry({
+            _id: entryData._id,
+            title,
+            text,
+            commentDisabled,
+            timestamp,
+          });
+          onClose();
+        })(),
+        {
+          success: () => ({
+            title: "Entry has been edited",
+            position: "top-right",
+            duration: 3000,
+            isClosable: true,
+          }),
+          error: (errorMessage) => ({
+            title: "Failed to edit entry",
+            description: `${errorMessage}`,
+            position: "top-right",
+            isClosable: true,
+          }),
+          loading: {
+            title: "Editing...",
+            description: "Please wait...",
+            position: "top-right",
+          },
+        }
+      );
     } else {
-      return await createEntry({
-        title,
-        text,
-        userId: currentUser._id,
-        commentDisabled,
-        timestamp,
-      });
+      toast.promise(
+        (async () => {
+          createEntry({
+            title,
+            text,
+            commentDisabled,
+          });
+          onClose();
+        })(),
+        {
+          success: () => ({
+            title: "Entry created",
+            position: "top-right",
+            duration: 3000,
+            isClosable: true,
+          }),
+          error: (errorMessage) => ({
+            title: "Failed to create entry",
+            description: `${errorMessage}`,
+            position: "top-right",
+            isClosable: true,
+          }),
+          loading: {
+            title: "Creating...",
+            description: "Please wait...",
+            position: "top-right",
+          },
+        }
+      );
     }
   };
 

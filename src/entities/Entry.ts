@@ -11,9 +11,7 @@ export default interface Entry {
 export interface EntryDataToSubmit {
   title: string;
   text: string;
-  userId: string;
   commentDisabled: boolean;
-  timestamp: Date;
 }
 
 export interface EntryDataToEdit {

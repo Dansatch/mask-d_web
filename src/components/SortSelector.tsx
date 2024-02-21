@@ -11,13 +11,13 @@ import { BsChevronDown } from "react-icons/bs";
 import { useLocation } from "react-router-dom";
 import useAppStore from "../store";
 
-const userSortOrders = [
+const userSortOptions = [
   { value: "", label: "Default" },
   { value: "followers", label: "Followers" },
   // { value: "entries", label: "Entries" },
 ];
 
-const entrySortOrders = [
+const entrySortOptions = [
   { value: "", label: "Default" },
   { value: "likes", label: "Likes" },
   { value: "-likes", label: "Likes (Desc)" },
@@ -29,21 +29,21 @@ const SortSelector = () => {
   const currentPath = useLocation().pathname;
   const currentRouteIsEntries = currentPath.startsWith("/entries");
 
-  const sortOrder = currentRouteIsEntries
-    ? useAppStore().entryQueryStore().entryQuery.sortOrder
-    : useAppStore().userQueryStore().userQuery.sortOrder;
-  const setSortOrder = currentRouteIsEntries
-    ? useAppStore().entryQueryStore((s) => s.setSortOrder)
-    : useAppStore().userQueryStore((s) => s.setSortOrder);
+  const sortOption = currentRouteIsEntries
+    ? useAppStore().entryQueryStore().entryQuery.sortOption
+    : useAppStore().userQueryStore().userQuery.sortOption;
+  const setSortOption = currentRouteIsEntries
+    ? useAppStore().entryQueryStore((s) => s.setSortOption)
+    : useAppStore().userQueryStore((s) => s.setSortOption);
 
-  const sortOrders = currentRouteIsEntries ? entrySortOrders : userSortOrders;
+  const sortOrders = currentRouteIsEntries ? entrySortOptions : userSortOptions;
 
   const currentSortOrder = sortOrders.find(
-    (order) => order.value === sortOrder
+    (order) => order.value === sortOption
   );
 
   useEffect(() => {
-    setSortOrder("");
+    setSortOption("");
   }, []);
 
   return (
@@ -58,7 +58,7 @@ const SortSelector = () => {
           <MenuItem
             value={order.value}
             key={order.value}
-            onClick={() => setSortOrder(order.value)}
+            onClick={() => setSortOption(order.value)}
           >
             {order.label}
           </MenuItem>

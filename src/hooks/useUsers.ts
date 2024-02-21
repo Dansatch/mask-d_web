@@ -21,7 +21,7 @@ const useUsers = () => {
     return userService.getAll({
       params: {
         searchText: userQuery.searchText,
-        sortOrder: userQuery.sortOrder,
+        sortOrder: userQuery.sortOption,
         page: pageParam,
         pageSize: PAGE_SIZE,
       },

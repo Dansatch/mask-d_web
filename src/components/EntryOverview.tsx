@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import {
   useDisclosure,
@@ -14,18 +14,13 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import CommentSection from "./CommentSection";
 import EntryCard from "./EntryCard";
-import Entry from "../entities/Entry";
 import { useEntry } from "../hooks/useEntries";
 
 const EntryOverview = () => {
-  const [entryData, setEntryData] = useState<Entry | undefined>(undefined);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { entryId } = useParams();
+  const selectedEntry = useEntry(entryId || "").data;
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
-
-  const getEntryData = async () => {
-    setEntryData(await useEntry(entryId || ""));
-  };
 
   const getScrollBehavior = () => {
     if (window.innerWidth < 992) return "inside";
@@ -33,7 +28,6 @@ const EntryOverview = () => {
   };
 
   useEffect(() => {
-    getEntryData();
     onOpen();
   });
 
@@ -57,12 +51,12 @@ const EntryOverview = () => {
 
         <ModalBody paddingX={2}>
           <Box height={"350px"}>
-            {entryData && <EntryCard entryData={entryData} />}
+            {selectedEntry && <EntryCard entryData={selectedEntry} />}
           </Box>
           <Box>
-            {entryData && !entryData.commentDisabled && (
+            {selectedEntry && !selectedEntry.commentDisabled && (
               <CommentSection
-                entryId={entryData._id}
+                entryId={selectedEntry._id}
                 scrollBehavior={getScrollBehavior()}
               />
             )}

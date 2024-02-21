@@ -1,61 +1,61 @@
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import entries from "../data/entries";
 import Entry, { EntryDataToEdit, EntryDataToSubmit } from "../entities/Entry";
+import EntryService from "../services/entryService";
+import { InfiniteFetchResponse } from "../services/api-client";
 import useAppStore from "../store";
 
 const PAGE_SIZE = 10;
+const entryService = new EntryService();
 
-// Get parameters from useAppStore().entryQueryStore().entryQuery
-const useEntries = (authorId?: string, mostLiked?: boolean) => {
-  let entriesToReturn = entries;
+const useEntries = (mostLiked?: boolean) => {
+  const entryQuery = useAppStore().entryQueryStore().entryQuery;
 
-  if (authorId) {
-    entriesToReturn = entriesToReturn.filter(
-      (entry) => entry.userId === authorId
-    );
-  }
-
-  if (mostLiked) {
-    entriesToReturn = entriesToReturn
-      .sort((a, b) => b.likes.length - a.likes.length) // Sort by number of likes
-      .slice(0, 3); // Get top 3 most liked entries
-  }
-
-  const fetchEntries = (pageParam: number) => {
-    const startIndex = (pageParam - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
-    const paginatedData = entriesToReturn.slice(startIndex, endIndex);
-
-    return Promise.resolve(paginatedData);
+  const getAllEntries = () => {
+    return useInfiniteQuery<InfiniteFetchResponse<Entry>, Error>({
+      queryKey: ["entries", entryQuery],
+      queryFn: ({ pageParam }) =>
+        entryService.getAll({
+          params: {
+            searchText: entryQuery.searchText,
+            sortOption: entryQuery.sortOption,
+            authorId: entryQuery.authorId,
+            timeFilter: entryQuery.timeFilterValue,
+            page: pageParam,
+            pageSize: PAGE_SIZE,
+          },
+        }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) => {
+        return lastPage.page < lastPage.totalPages
+          ? allPages.length + 1
+          : undefined;
+      },
+    });
   };
 
-  const queryKey =
-    authorId && !mostLiked
-      ? ["entries", authorId]
-      : authorId && mostLiked
-      ? ["entries", authorId, "mostLiked"]
-      : ["entries"];
+  const getMostLikedEntries = () => {
+    return useInfiniteQuery<InfiniteFetchResponse<Entry>, Error>({
+      queryKey: ["entries", "user-most-liked"],
+      queryFn: () => entryService.getUserMostLiked(),
+      initialPageParam: 1,
+      getNextPageParam: () => undefined,
+    });
+  };
 
-  return useInfiniteQuery<Entry[], Error>({
-    queryKey,
-    queryFn: ({ pageParam }) => fetchEntries(Number(pageParam)),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage[lastPage.length - 1] &&
-        lastPage[lastPage.length - 1]._id !==
-          entriesToReturn[entriesToReturn.length - 1]?._id
-        ? allPages.length + 1
-        : undefined;
-    },
-  });
+  if (mostLiked) return getMostLikedEntries();
+  else return getAllEntries();
 };
 
 export const useEntry = (id: string) => {
-  return Promise.resolve(entries.find((entry) => entry._id === id));
+  return useQuery({
+    queryKey: ["entry", id],
+    queryFn: () => entryService.get(id),
+  });
 };
 
 export const getTotalEntriesByUserName = (username: string) => {
@@ -63,56 +63,58 @@ export const getTotalEntriesByUserName = (username: string) => {
   return Promise.resolve(2391);
 };
 
-export const createEntry = async (data: EntryDataToSubmit) => {
-  // Convert to Entry
-  return Promise.resolve(console.log(`Created ${data.title}`));
-};
-
-export const editEntry = async (data: EntryDataToEdit) => {
-  // Convert to Entry
-  return Promise.resolve(console.log(`Edited ${data.title}`));
-};
-
-export const useEntryLikes = (entryId: string) => {
+export const useEntryMutations = () => {
   const queryClient = useQueryClient();
-  queryClient;
-  const currentUserId = useAppStore().currentUser._id;
+
+  const createMutation = useMutation({
+    mutationFn: (data: EntryDataToSubmit) => entryService.create(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["entries"] }),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: (data: EntryDataToEdit) => entryService.edit(data),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["entries"] }),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
+  });
 
   const likeMutation = useMutation({
-    mutationFn: () => likeEntry(entryId, currentUserId),
-    // onSuccess: () =>
-    // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
+    mutationFn: (id: string) => entryService.like(id),
+    onSuccess: () => queryClient.invalidateQueries(),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
   });
 
   const unlikeMutation = useMutation({
-    mutationFn: () => unlikeEntry(entryId, currentUserId),
-    // onSuccess: () =>
-    // queryClient.invalidateQueries({ queryKey: ["entries", entryId] }),
+    mutationFn: (id: string) => entryService.unlike(id),
+    onSuccess: () => queryClient.invalidateQueries(),
+    onError: (error: any) => {
+      throw new Error(error);
+    },
   });
 
-  const handleLike = async () => {
-    await likeMutation.mutateAsync();
+  const handleCreate = async (data: EntryDataToSubmit) => {
+    await createMutation.mutateAsync(data);
   };
 
-  const handleUnlike = async () => {
-    await unlikeMutation.mutateAsync();
+  const handleEdit = async (data: EntryDataToEdit) => {
+    await editMutation.mutateAsync(data);
   };
 
-  return {
-    handleLike,
-    handleUnlike,
+  const handleLike = async (id: string) => {
+    await likeMutation.mutateAsync(id);
   };
-};
 
-const likeEntry = async (entryId: string, currentUserId: string) => {
-  const entry = await useEntry(entryId);
-  return entry?.likes.push(currentUserId);
-};
+  const handleUnlike = async (id: string) => {
+    await unlikeMutation.mutateAsync(id);
+  };
 
-const unlikeEntry = async (entryId: string, currentUserId: string) => {
-  currentUserId; // to unlike
-  const entry = await useEntry(entryId);
-  return entry?.likes.pop();
+  return { handleCreate, handleEdit, handleLike, handleUnlike };
 };
 
 export default useEntries;

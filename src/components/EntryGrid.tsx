@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { ResponsiveValue, Spinner, Text } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Outlet } from "react-router-dom";
@@ -9,6 +9,7 @@ import EntryCard from "./EntryCard";
 import EntryCardSkeleton from "./EntryCardSkeleton";
 import useEntries from "../hooks/useEntries";
 import colors from "../config/colors";
+import useAppStore from "../store";
 
 interface Props {
   authorId?: string;
@@ -22,11 +23,16 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
     isLoading,
     hasNextPage,
     fetchNextPage,
-  } = useEntries(authorId, mostLiked);
+  } = useEntries(mostLiked);
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
+  const setAuthorId = useAppStore().entryQueryStore().setAuthorId;
 
   const fetchedEntriesCount =
-    entries?.pages.reduce((total, page) => total + page.length, 0) || 0;
+    entries?.pages.reduce((total, page) => total + page.data.length, 0) || 0;
+
+  useEffect(() => {
+    setAuthorId(authorId || "");
+  }, [authorId]);
 
   if (!fetchedEntriesCount)
     return (
@@ -53,7 +59,7 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
 
           {entries?.pages.map((page, index) => (
             <React.Fragment key={index}>
-              {page.map((entry) => (
+              {page.data.map((entry) => (
                 <CardContainer key={entry._id}>
                   <EntryCard entryData={entry} />
                 </CardContainer>
