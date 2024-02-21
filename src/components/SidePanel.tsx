@@ -26,23 +26,20 @@ interface Props {
   isSlideable?: ResponsiveValue<Boolean>;
 }
 
-interface PanelContentProps {
-  userId: string;
-}
-
-const PanelContent = ({ userId }: PanelContentProps) => {
+const PanelContent = () => {
   const {
     fetchEntryAlerts: { data },
     handleEntryAlertsClear,
-  } = useNotifications(userId);
+  } = useNotifications();
   const navigate = useNavigate();
+  const setTimeFilter = useAppStore().entryQueryStore().setTimeFilterValue;
   const gray100 = "#EDEDED"; // gray.100
 
   const panelOptions = [
     {
       icon: <MdFormatListBulleted />,
       label: "ALL ENTRIES",
-      handleClick: () => {},
+      handleClick: () => setTimeFilter("allTime"),
     },
     {
       icon: <RiUserFollowLine />,
@@ -52,12 +49,12 @@ const PanelContent = ({ userId }: PanelContentProps) => {
     {
       icon: <MdOutlineShowChart />,
       label: "TOP ENTRIES TODAY",
-      handleClick: () => {},
+      handleClick: () => setTimeFilter("today"),
     },
     {
       icon: <MdOutlineShowChart />,
       label: "TOP ENTRIES THIS MONTH",
-      handleClick: () => {},
+      handleClick: () => setTimeFilter("lastMonth"),
     },
   ];
 
@@ -148,10 +145,9 @@ const PanelContent = ({ userId }: PanelContentProps) => {
 };
 
 const SidePanel = ({ isSlideable }: Props) => {
-  const userId = useAppStore().currentUser._id;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  if (!isSlideable) return <PanelContent userId={userId} />;
+  if (!isSlideable) return <PanelContent />;
   else
     return (
       <>
@@ -175,7 +171,7 @@ const SidePanel = ({ isSlideable }: Props) => {
           <DrawerContent>
             <DrawerCloseButton />
             <DrawerBody padding={0}>
-              <PanelContent userId={userId} />
+              <PanelContent />
             </DrawerBody>
           </DrawerContent>
         </Drawer>

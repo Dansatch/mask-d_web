@@ -50,12 +50,7 @@ const NavBar = () => {
     {
       label: "",
       // linkTo: "", // component renders itself
-      icon: (
-        <NotificationPanel
-          userId={user._id}
-          placement={notificationPlacement}
-        />
-      ),
+      icon: <NotificationPanel placement={notificationPlacement} />,
     },
   ];
 

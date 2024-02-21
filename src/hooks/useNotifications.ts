@@ -1,54 +1,41 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import notifications from "../data/notifications";
 import Notification from "../entities/Notification";
+import NotificationService from "../services/notificationService";
 
-const useNotifications = (userId: string) => {
+const useNotifications = () => {
   const queryClient = useQueryClient();
+  const notificationService = new NotificationService();
 
   const fetchNotifications = useQuery<Notification[], Error>({
     queryKey: ["notifications"],
-    queryFn: () =>
-      Promise.resolve(
-        notifications.filter(
-          (notification) =>
-            notification.recipientId === userId &&
-            notification.type !== "newEntry"
-        )
-      ),
+    queryFn: () => notificationService.getAll(["followAlert", "other"]),
   });
 
   const fetchEntryAlerts = useQuery<Notification[], Error>({
     queryKey: ["notifications", "entryAlerts"],
-    queryFn: () =>
-      Promise.resolve(
-        notifications.filter(
-          (notification) =>
-            notification.recipientId === userId &&
-            notification.type === "newEntry"
-        )
-      ),
+    queryFn: () => notificationService.getAll(["newEntry"]),
+  });
+
+  const clearNotificationsMutation = useMutation({
+    mutationFn: () => notificationService.delete(["followAlert", "other"]),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["notifications"] }),
   });
 
   const clearEntryAlertsMutation = useMutation({
-    mutationFn: (userId: string) => deleteEntryAlerts(userId),
+    mutationFn: () => notificationService.delete(["newEntry"]),
     onSuccess: () =>
       queryClient.invalidateQueries({
         queryKey: ["notifications", "entryAlerts"],
       }),
   });
 
-  const clearNotificationsMutation = useMutation({
-    mutationFn: (userId: string) => deleteNotifications(userId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["notifications"] }),
-  });
-
   const handleNotificationsClear = async () => {
-    await clearNotificationsMutation.mutateAsync(userId);
+    await clearNotificationsMutation.mutateAsync();
   };
 
   const handleEntryAlertsClear = async () => {
-    await clearEntryAlertsMutation.mutateAsync(userId);
+    await clearEntryAlertsMutation.mutateAsync();
   };
 
   return {
@@ -57,26 +44,6 @@ const useNotifications = (userId: string) => {
     handleNotificationsClear,
     handleEntryAlertsClear,
   };
-};
-
-const deleteNotifications = async (userId: string) => {
-  const updatedNotifications: Notification[] = notifications.filter(
-    (notification) =>
-      notification.recipientId !== userId || notification.type === "newEntry"
-  );
-  notifications.splice(0, notifications.length, ...updatedNotifications);
-  return Promise.resolve(updatedNotifications);
-};
-
-const deleteEntryAlerts = async (userId: string) => {
-  // Believe the dummy method is wrong but it works regardless
-  const updatedNotifications: Notification[] = notifications.filter(
-    (notification) =>
-      notification.recipientId !== userId || notification.type !== "newEntry"
-  );
-  return Promise.resolve(
-    notifications.splice(0, notifications.length, ...updatedNotifications)
-  );
 };
 
 export default useNotifications;

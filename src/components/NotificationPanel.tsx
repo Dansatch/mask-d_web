@@ -15,22 +15,21 @@ import { PlacementWithLogical } from "@chakra-ui/popper";
 import useNotifications from "../hooks/useNotifications";
 
 interface Props {
-  userId: string;
   placement?: PlacementWithLogical;
 }
 
-const NotificationPanel = ({ userId, placement }: Props) => {
+const NotificationPanel = ({ placement }: Props) => {
   const {
     fetchNotifications: { data },
     handleNotificationsClear,
-  } = useNotifications(userId);
+  } = useNotifications();
 
   return (
     <>
       <Popover
         closeOnBlur={false}
         placement={placement}
-        onClose={() => handleNotificationsClear()}
+        onClose={async () => await handleNotificationsClear()}
         arrowPadding={2}
       >
         <PopoverTrigger>

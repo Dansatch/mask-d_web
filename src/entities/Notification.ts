@@ -1,4 +1,4 @@
-type NotificationType = "newEntry" | "followAlert" | "other";
+export type NotificationType = "newEntry" | "followAlert" | "other";
 
 export default interface Notification {
   _id: string;
@@ -7,4 +7,11 @@ export default interface Notification {
   type: NotificationType;
   relatedUsername: string;
   timestamp: Date;
+}
+
+export interface NotificationDataToSubmit {
+  recipientId: string;
+  message: string;
+  type: NotificationType;
+  relatedUsername: string;
 }
