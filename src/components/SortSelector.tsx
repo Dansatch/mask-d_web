@@ -12,13 +12,13 @@ import { useLocation } from "react-router-dom";
 import useAppStore from "../store";
 
 const userSortOptions = [
-  { value: "", label: "Default" },
-  { value: "followers", label: "Followers" },
+  { value: "username", label: "Default" },
+  { value: "-followers", label: "Followers" },
   // { value: "entries", label: "Entries" },
 ];
 
 const entrySortOptions = [
-  { value: "", label: "Default" },
+  { value: "-likes", label: "Default" },
   { value: "likes", label: "Likes" },
   { value: "-likes", label: "Likes (Desc)" },
   { value: "timestamp", label: "Date created" },
@@ -27,23 +27,23 @@ const entrySortOptions = [
 
 const SortSelector = () => {
   const currentPath = useLocation().pathname;
-  const currentRouteIsEntries = currentPath.startsWith("/entries");
+  const currentRouteIsUsers = currentPath.startsWith("/users");
 
-  const sortOption = currentRouteIsEntries
-    ? useAppStore().entryQueryStore().entryQuery.sortOption
-    : useAppStore().userQueryStore().userQuery.sortOption;
-  const setSortOption = currentRouteIsEntries
-    ? useAppStore().entryQueryStore((s) => s.setSortOption)
-    : useAppStore().userQueryStore((s) => s.setSortOption);
+  const sortOption = currentRouteIsUsers
+    ? useAppStore().userQueryStore().userQuery.sortOption
+    : useAppStore().entryQueryStore().entryQuery.sortOption;
+  const setSortOption = currentRouteIsUsers
+    ? useAppStore().userQueryStore((s) => s.setSortOption)
+    : useAppStore().entryQueryStore((s) => s.setSortOption);
 
-  const sortOrders = currentRouteIsEntries ? entrySortOptions : userSortOptions;
+  const sortOrders = currentRouteIsUsers ? userSortOptions : entrySortOptions;
 
   const currentSortOrder = sortOrders.find(
     (order) => order.value === sortOption
   );
 
   useEffect(() => {
-    setSortOption("");
+    setSortOption("likes");
   }, []);
 
   return (
@@ -57,7 +57,7 @@ const SortSelector = () => {
         {sortOrders.map((order) => (
           <MenuItem
             value={order.value}
-            key={order.value}
+            key={order.label}
             onClick={() => setSortOption(order.value)}
           >
             {order.label}
