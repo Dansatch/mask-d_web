@@ -143,6 +143,7 @@ const EntryForm = ({ displayComponent, entryData }: Props) => {
 
   useEffect(() => {
     setShowPreview(false);
+    setValue("commentDisabled", false); // default setting
 
     if (isEdit) {
       setValue("title", entryData.title);
@@ -278,7 +279,6 @@ const EntryForm = ({ displayComponent, entryData }: Props) => {
                   </Text>
                 </Box>
 
-                {/* Refactor to use register */}
                 <RadioGroup
                   width={"100%"}
                   marginTop={-1}
@@ -291,10 +291,18 @@ const EntryForm = ({ displayComponent, entryData }: Props) => {
                       Allow comments?
                     </Text>
 
-                    <Radio value={"allow"} colorScheme="yellow" defaultChecked>
+                    <Radio
+                      value={"allow"}
+                      colorScheme="yellow"
+                      isChecked={watch("commentDisabled") === false}
+                    >
                       Allow
                     </Radio>
-                    <Radio value={"disable"} colorScheme="yellow">
+                    <Radio
+                      value={"disable"}
+                      colorScheme="yellow"
+                      isChecked={watch("commentDisabled") === true}
+                    >
                       Disable
                     </Radio>
                   </HStack>

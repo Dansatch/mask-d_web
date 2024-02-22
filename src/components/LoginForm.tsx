@@ -34,7 +34,7 @@ const LoginForm = () => {
       });
 
       const goTo = new URLSearchParams(location.search).get("goTo"); // check for previous route
-      return goTo ? console.log(goTo) : console.log("/");
+      return goTo ? navigate(goTo) : navigate("/");
     }
 
     toast.promise(handleUserLogin(), {

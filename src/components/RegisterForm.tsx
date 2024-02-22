@@ -125,6 +125,7 @@ const RegisterForm = () => {
   }, [isConfirmed]);
 
   useEffect(() => {
+    setValue("isPrivate", false); // default setting
     reshuffleUsername();
   }, []);
 
@@ -231,11 +232,19 @@ const RegisterForm = () => {
                 Account privacy?
               </Text>
 
-              <Radio value={"private"} colorScheme="yellow">
+              <Radio
+                value={"private"}
+                colorScheme="yellow"
+                isChecked={watch("isPrivate") === true}
+              >
                 Private
               </Radio>
 
-              <Radio value={"public"} colorScheme="yellow" defaultChecked>
+              <Radio
+                value={"public"}
+                colorScheme="yellow"
+                isChecked={watch("isPrivate") === false}
+              >
                 Public
               </Radio>
             </HStack>
@@ -247,7 +256,8 @@ const RegisterForm = () => {
             color={colors.medium}
           >
             This determines whether or not your entries would be seen by other
-            users or your eyes only. It can be changed later on
+            users or your eyes only. It can be changed later on <br /> (Public
+            by default)
           </Text>
         </Box>
 
