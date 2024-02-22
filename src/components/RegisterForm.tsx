@@ -22,7 +22,7 @@ import {
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { generateUsername } from "friendly-username-generator";
 import { RepeatIcon } from "@chakra-ui/icons";
 
@@ -59,6 +59,7 @@ const RegisterForm = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const registerUser = useRegisterUser();
 
   const {
@@ -83,7 +84,9 @@ const RegisterForm = () => {
         password: data.password,
         isPrivate: data.isPrivate,
       });
-      navigate("/");
+
+      const goTo = new URLSearchParams(location.search).get("goTo"); // check for previous route
+      return goTo ? navigate(goTo) : navigate("/");
     }
 
     return toast.promise(handleUserRegistration(), {

@@ -25,7 +25,15 @@ const AppLayout = () => {
   }, []);
 
   // To make protected route
-  if (!isLoggedIn) return <Navigate to="/login" />;
+  if (!isLoggedIn)
+    return (
+      <Navigate
+        to={{
+          pathname: "/login",
+          search: `?goTo=${encodeURIComponent(window.location.pathname)}`,
+        }}
+      />
+    );
 
   return (
     <>

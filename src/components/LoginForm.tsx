@@ -2,7 +2,7 @@ import { Checkbox, HStack, Link, VStack, useToast } from "@chakra-ui/react";
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import FormInput from "./FormInput";
 import AppButton from "./AppButton";
@@ -23,6 +23,7 @@ const LoginForm = () => {
   } = useForm<FormData>({ resolver: zodResolver(schema) });
   const toast = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useLoginUser();
 
   const onSubmit = async (data: FieldValues) => {
@@ -31,7 +32,9 @@ const LoginForm = () => {
         username: data.username,
         password: data.password,
       });
-      navigate("/");
+
+      const goTo = new URLSearchParams(location.search).get("goTo"); // check for previous route
+      return goTo ? console.log(goTo) : console.log("/");
     }
 
     toast.promise(handleUserLogin(), {
