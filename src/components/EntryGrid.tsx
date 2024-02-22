@@ -26,13 +26,20 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
   } = useEntries(mostLiked);
   const skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
   const setAuthorId = useAppStore().entryQueryStore().setAuthorId;
+  const setTimeFilter = useAppStore().entryQueryStore().setTimeFilterValue;
 
   const fetchedEntriesCount =
     entries?.pages.reduce((total, page) => total + page.data.length, 0) || 0;
 
+  // Set author ID
   useEffect(() => {
     setAuthorId(authorId || "");
   }, [authorId]);
+
+  // Set default time filter (to be refactored out)
+  useEffect(() => {
+    setTimeFilter("today");
+  }, []);
 
   if (!fetchedEntriesCount)
     return (
