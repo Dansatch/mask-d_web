@@ -27,6 +27,7 @@ import formatDate from "../utils/formatDate";
 import peopleCount from "../utils/peopleCount";
 import colors from "../config/colors";
 import useAppStore from "../store";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
   entryData: Entry;
@@ -51,6 +52,7 @@ const EntryCard = ({
   const isLiked = likes?.includes(currentUserId); // refactor out
   const handleRefresh = useRefresh();
   const backgroundColor = useColorModeValue("", "black");
+  const queryClient = useQueryClient();
 
   // Navigation variables
   const navigate = useNavigate();
@@ -68,6 +70,7 @@ const EntryCard = ({
     else await likeEntry(entryId);
   };
 
+  // Enables dynamic comment count setting (consider refactor)
   useEffect(() => {
     const fetchCommentCount = async () => {
       try {
@@ -79,7 +82,7 @@ const EntryCard = ({
     };
 
     fetchCommentCount();
-  }, [entryId]);
+  }, [entryId, queryClient.getQueryData(["comments", entryId])]);
 
   return (
     <Card

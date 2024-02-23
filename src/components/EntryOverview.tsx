@@ -29,7 +29,7 @@ const EntryOverview = () => {
 
   useEffect(() => {
     onOpen();
-  });
+  }, []);
 
   return (
     <Modal
