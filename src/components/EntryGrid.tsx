@@ -38,7 +38,11 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
 
   // Set default time filter (to be refactored out)
   useEffect(() => {
-    setTimeFilter("today");
+    if (authorId) {
+      setTimeFilter("allTime");
+    } else {
+      setTimeFilter("today");
+    }
   }, []);
 
   if (!fetchedEntriesCount)
@@ -76,7 +80,8 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
         </AppGrid>
       </InfiniteScroll>
 
-      <Outlet />
+      {/* To not render outlet in side user profile panel */}
+      {!mostLiked && <Outlet />}
     </>
   );
 };

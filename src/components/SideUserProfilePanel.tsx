@@ -82,7 +82,7 @@ const SideUserProfilePanel = () => {
         <Divider backgroundColor={color} width={"40%"} marginTop={0} />
 
         {/* <Box width={"100%"} border={"2px solid red"}> */}
-        <EntryGrid authorId={user._id} noOfColumns={1} mostLiked={true} />
+        <EntryGrid noOfColumns={1} mostLiked={true} />
         {/* </Box> */}
       </Box>
     </VStack>
