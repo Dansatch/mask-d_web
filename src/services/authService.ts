@@ -1,8 +1,9 @@
 import { getAxiosInstance } from "./api-client";
 
-interface LoginCredentials {
+export interface LoginCredentials {
   username: string;
   password: string;
+  rememberMe: boolean;
 }
 
 class AuthService {

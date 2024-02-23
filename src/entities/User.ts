@@ -7,8 +7,8 @@ export default interface User {
   timestamp: Date;
 }
 
-export interface UserDataToSubmit {
+export interface UserRegisterData {
   username: string;
   password: string;
-  isPrivate?: boolean; // isn't used in login
+  isPrivate: boolean;
 }

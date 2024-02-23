@@ -4,8 +4,8 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import users from "../data/users";
-import User, { UserDataToSubmit } from "../entities/User";
-import AuthService from "../services/authService";
+import User, { UserRegisterData } from "../entities/User";
+import AuthService, { LoginCredentials } from "../services/authService";
 import useAppStore from "../store";
 import UserService from "../services/userService";
 import { InfiniteFetchResponse } from "../services/api-client";
@@ -55,7 +55,7 @@ export const useRegisterUser = () => {
   const setLoggedIn = useAppStore().setLoggedIn;
   const setCurrentUser = useAppStore().setCurrentUser;
 
-  return async (data: UserDataToSubmit) => {
+  return async (data: UserRegisterData) => {
     try {
       const user = await userService.register(data);
 
@@ -72,7 +72,7 @@ export const useLoginUser = () => {
   const setLoggedIn = useAppStore().setLoggedIn;
   const setCurrentUser = useAppStore().setCurrentUser;
 
-  const login = async (data: UserDataToSubmit) => {
+  const login = async (data: LoginCredentials) => {
     try {
       const user = await authService.login(data);
       localStorage.setItem("currentUser", JSON.stringify(user));

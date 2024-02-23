@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios";
-import User, { UserDataToSubmit } from "../entities/User";
+import User, { UserRegisterData } from "../entities/User";
 import { InfiniteFetchResponse, getAxiosInstance } from "./api-client";
 
 class UserService {
@@ -32,7 +32,7 @@ class UserService {
       });
   };
 
-  register = async (credentials: UserDataToSubmit) => {
+  register = async (credentials: UserRegisterData) => {
     return this.axiosInstance
       .post("/", credentials)
       .then((res) => {

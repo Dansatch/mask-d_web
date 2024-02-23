@@ -1,8 +1,9 @@
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Checkbox, HStack, Link, VStack, useToast } from "@chakra-ui/react";
 import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate, useLocation } from "react-router-dom";
 
 import FormInput from "./FormInput";
 import AppButton from "./AppButton";
@@ -16,6 +17,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 const LoginForm = () => {
+  const [rememberMe, setRememberMe] = useState(false);
   const {
     register,
     handleSubmit,
@@ -31,6 +33,7 @@ const LoginForm = () => {
       await login({
         username: data.username,
         password: data.password,
+        rememberMe,
       });
 
       const goTo = new URLSearchParams(location.search).get("goTo"); // check for previous route
@@ -84,7 +87,9 @@ const LoginForm = () => {
         />
 
         <HStack align={"start"} justify={"space-between"} width={"100%"}>
-          <Checkbox>Remember me</Checkbox>
+          <Checkbox onChange={(event) => setRememberMe(event.target.checked)}>
+            Remember me
+          </Checkbox>
           <Link color={"blue.400"}>Can't sign in?</Link>
         </HStack>
 
