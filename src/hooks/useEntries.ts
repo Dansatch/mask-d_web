@@ -24,6 +24,7 @@ const useEntries = (mostLiked?: boolean) => {
             searchText: entryQuery.searchText,
             sortOption: entryQuery.sortOption,
             authorId: entryQuery.authorId,
+            followingOnly: entryQuery.followingOnly,
             timeFilter: entryQuery.timeFilterValue,
             page: pageParam,
             pageSize: PAGE_SIZE,

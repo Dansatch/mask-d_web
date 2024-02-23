@@ -33,18 +33,19 @@ const PanelContent = () => {
   } = useNotifications();
   const navigate = useNavigate();
   const setTimeFilter = useAppStore().entryQueryStore().setTimeFilterValue;
+  const setFollowingOnly = useAppStore().entryQueryStore().setFollowingOnly;
   const gray100 = "#EDEDED"; // gray.100
 
   const panelOptions = [
     {
       icon: <MdFormatListBulleted />,
-      label: "ALL ENTRIES",
-      handleClick: () => setTimeFilter("allTime"),
+      label: "ALL USERS' ENTRIES",
+      handleClick: () => setFollowingOnly(0),
     },
     {
       icon: <RiUserFollowLine />,
       label: "FOLLOWED USERS' ENTRIES",
-      handleClick: () => {},
+      handleClick: () => setFollowingOnly(1),
     },
     {
       icon: <MdOutlineShowChart />,

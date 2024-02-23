@@ -3,6 +3,7 @@ import User from "./entities/User";
 
 interface EntryQuery {
   authorId?: string;
+  followingOnly?: 1 | 0;
   timeFilterValue?: string;
   sortOption?: string;
   searchText?: string;
@@ -16,6 +17,7 @@ interface UserQuery {
 interface EntryQueryStore {
   entryQuery: EntryQuery;
   setAuthorId: (userId: string) => void;
+  setFollowingOnly: (value: 1 | 0) => void;
   setSearchText: (searchText: string) => void;
   setTimeFilterValue: (filterText: string) => void;
   setSortOption: (sortOption: string) => void;
@@ -39,6 +41,8 @@ interface AppStore {
 const useEntryQueryStore = create<EntryQueryStore>((set) => ({
   entryQuery: {},
   setAuthorId: (authorId) => set(() => ({ entryQuery: { authorId } })),
+  setFollowingOnly: (value) =>
+    set(() => ({ entryQuery: { followingOnly: value } })),
   setSearchText: (searchText) => set(() => ({ entryQuery: { searchText } })),
   setTimeFilterValue: (timeFilterValue) =>
     set((store) => ({
