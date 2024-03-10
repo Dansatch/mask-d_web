@@ -18,7 +18,6 @@ const userSortOptions = [
 ];
 
 const entrySortOptions = [
-  { value: "-likes", label: "Default" },
   { value: "likes", label: "Likes" },
   { value: "-likes", label: "Likes (Desc)" },
   { value: "timestamp", label: "Date created" },
@@ -43,7 +42,7 @@ const SortSelector = () => {
   );
 
   useEffect(() => {
-    setSortOption("likes");
+    setSortOption("-likes");
   }, []);
 
   return (

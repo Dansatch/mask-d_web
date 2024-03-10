@@ -19,7 +19,8 @@ const SearchInput = ({ placeholder }: Props) => {
   const ref = useRef<HTMLInputElement>(null);
   const currentPath = useLocation().pathname;
 
-  const currentRouteIsEntries = currentPath.startsWith("/entries");
+  const currentRouteIsEntries =
+    currentPath.startsWith("/entries") || currentPath === "/";
 
   const setSearchText = currentRouteIsEntries
     ? useAppStore().entryQueryStore((s) => s.setSearchText)
