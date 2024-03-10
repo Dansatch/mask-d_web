@@ -1,3 +1,4 @@
+// To fix routing on vercel beta deployment
 import { createBrowserRouter } from "react-router-dom";
 import { Box } from "@chakra-ui/react";
 import HomeLayout from "./pages/HomeLayout";
