@@ -95,7 +95,7 @@ const EntryCard = ({
       cursor={"pointer"}
       onClick={() => navigate(navigationPath)}
     >
-      <CardBody width={"100%"} height={"100%"} paddingX={3} paddingY={3}>
+      <CardBody width={"100%"} height={"100%"} paddingX={2} paddingY={3}>
         <Grid
           h="100%"
           templateAreas={`"userDetails"
@@ -112,11 +112,15 @@ const EntryCard = ({
             justifyContent={"start"}
             alignItems={"center"}
           >
-            <HStack width={"100%"} spacing={1} paddingX={1}>
+            <HStack
+              width={"100%"}
+              spacing={1}
+              paddingX={{ base: 1, lg: "2px", xl: 1 }}
+            >
               <ProfileAvatar boxSize="35px" username={authorName || ""} />
 
               <Text
-                fontSize={"md"}
+                fontSize={{ base: "md", lg: "sm", xl: "md" }}
                 textTransform={"uppercase"}
                 fontWeight={"extrabold"}
                 fontFamily={"mono"}

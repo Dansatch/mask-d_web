@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ResponsiveValue, Spinner, Text } from "@chakra-ui/react";
+import { Box, ResponsiveValue, Spinner, Text } from "@chakra-ui/react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Outlet } from "react-router-dom";
 
@@ -72,7 +72,9 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
             <React.Fragment key={index}>
               {page.data.map((entry) => (
                 <CardContainer key={entry._id}>
-                  <EntryCard entryData={entry} />
+                  <Box height={"350px"}>
+                    <EntryCard entryData={entry} />
+                  </Box>
                 </CardContainer>
               ))}
             </React.Fragment>
