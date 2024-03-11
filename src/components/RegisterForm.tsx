@@ -105,7 +105,7 @@ const RegisterForm = () => {
       }),
       loading: {
         title: "Creating account...",
-        description: "Please wait...",
+        description: "This might take some time, please wait...",
         position: "top-right",
       },
     });

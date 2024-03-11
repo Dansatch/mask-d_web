@@ -56,7 +56,7 @@ const LoginForm = () => {
       }),
       loading: {
         title: "Logging in...",
-        description: "Please wait...",
+        description: "This might take some time, please wait...",
         position: "top-right",
       },
     });

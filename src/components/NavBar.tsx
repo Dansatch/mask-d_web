@@ -62,14 +62,14 @@ const NavBar = () => {
     <>
       <HStack
         bg={useColorModeValue("gray.100", "gray.900")}
-        px={{ base: 3, md: 7 }}
+        px={{ base: 2.5, md: 7 }}
         py={2}
         width={"100%"}
         height={"60px"}
         align={"start"}
         justify={"space-between"}
         alignItems={"center"}
-        spacing={{ base: 4, xl: 10 }}
+        spacing={{ base: 1.5, xl: 10 }}
         position={"sticky"}
         top={-0.2}
         zIndex={10}
