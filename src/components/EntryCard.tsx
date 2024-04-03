@@ -81,7 +81,7 @@ const EntryCard = ({
       }
     };
 
-    fetchCommentCount();
+    isPreview ? setCommentCount(999) : fetchCommentCount();
   }, [entryId, queryClient.getQueryData(["comments", entryId])]);
 
   return (
