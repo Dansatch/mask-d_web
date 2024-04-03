@@ -47,6 +47,7 @@ const EntryForm = ({ displayComponent, entryData }: Props) => {
   const { handleCreate: createEntry, handleEdit: editEntry } =
     useEntryMutations();
   const currentUser = useAppStore().currentUser; // Gotten from state
+  const setSortOption = useAppStore().entryQueryStore().setSortOption;
   const toast = useToast();
   const maxTitleLength = 40;
   const maxTextLength = 2048;
@@ -117,6 +118,7 @@ const EntryForm = ({ displayComponent, entryData }: Props) => {
             commentDisabled,
           });
           onClose();
+          setSortOption("-timestamp");
         })(),
         {
           success: () => ({

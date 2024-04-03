@@ -57,9 +57,7 @@ class EntryService {
   edit = async ({ _id: entryId, timestamp, ...entryData }: EntryDataToEdit) => {
     return this.axiosInstance
       .put(`/${entryId}`, entryData)
-      .then((res) => {
-        return res.data;
-      })
+      .then((res) => res.data)
       .catch((err) => {
         const errorMessage =
           err.response?.data || "An error occurred, pls try again later.";
