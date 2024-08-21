@@ -1,6 +1,10 @@
-import { isLoggedIn } from "./useUsers";
+import User from "../entities/User";
+import AuthService from "../services/authService";
 
-// Auth check and return appropriately
-const useAuth = async () => await isLoggedIn();
+// Login check and return userdata
+const useAuth = async (): Promise<User> => {
+  const authService = new AuthService();
+  return await authService.checkLogin();
+};
 
 export default useAuth;

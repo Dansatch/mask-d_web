@@ -59,7 +59,6 @@ export const useRegisterUser = () => {
     try {
       const user = await userService.register(data);
 
-      localStorage.setItem("currentUser", JSON.stringify(user));
       setCurrentUser(user);
       setLoggedIn(true);
     } catch (error: any) {
@@ -75,7 +74,6 @@ export const useLoginUser = () => {
   const login = async (data: LoginCredentials) => {
     try {
       const user = await authService.login(data);
-      localStorage.setItem("currentUser", JSON.stringify(user));
       setCurrentUser(user);
       setLoggedIn(true);
     } catch (error: any) {
@@ -86,9 +84,8 @@ export const useLoginUser = () => {
   const logout = async () => {
     try {
       await authService.logout();
-      setLoggedIn(false);
       setCurrentUser(undefined);
-      localStorage.removeItem("currentUser");
+      setLoggedIn(false);
     } catch (error: any) {
       throw new Error(error);
     }
@@ -99,8 +96,6 @@ export const useLoginUser = () => {
     logout,
   };
 };
-
-export const isLoggedIn = async () => await authService.checkLogin();
 
 export const useUserUpdate = () => {
   const queryClient = useQueryClient();
@@ -127,11 +122,6 @@ export const useUserUpdate = () => {
 
       queryClient.invalidateQueries(); // Clear cache
 
-      localStorage.setItem(
-        "currentUser",
-        JSON.stringify({ ...currentUser, isPrivate })
-      ); // Update user in storage
-
       setCurrentUser({ ...currentUser, isPrivate }); // Update user in state
     } catch (error: any) {
       throw new Error(error);
@@ -157,7 +147,6 @@ export const useFollowUser = (selectedUserId: string) => {
 
     // Clean up
     queryClient.invalidateQueries();
-    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
     setCurrentUser(updatedUser);
   };
 
@@ -165,7 +154,7 @@ export const useFollowUser = (selectedUserId: string) => {
 };
 
 export const isFollowing = (selectedUserId: string) => {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "");
+  const currentUser = useAppStore().currentUser;
   return currentUser?.following.includes(selectedUserId);
 };
 

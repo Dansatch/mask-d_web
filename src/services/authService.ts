@@ -31,9 +31,15 @@ class AuthService {
   };
 
   checkLogin = async () => {
-    const res = await this.axiosInstance.get("/check-login");
-
-    return res.data;
+    return await this.axiosInstance
+      .get("/check-login")
+      .then((res) => res.data)
+      .catch((err) => {
+        const errorMessage =
+          err.response?.data ||
+          "An error occurred during authentication, pls try again later.";
+        throw new Error(errorMessage);
+      });
   };
 
   logout = async () => {
