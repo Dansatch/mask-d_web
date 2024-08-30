@@ -14,14 +14,18 @@ const ErrorPage = () => {
   return (
     <Box paddingTop={"10vh"}>
       <Heading>
-        {isRouteErrorResponse(error) ? "You lost fam??" : "My bad fam"}
+        {isRouteErrorResponse(error) ? "Invalid route" : "Error"}
       </Heading>
 
       <Text fontStyle={"italic"} color={colors.medium}>
         {isRouteErrorResponse(error)
           ? "Route doesn't exist"
-          : "An unexpected error occured."}
+          : "An unexpected error occured, pls try again later"}
       </Text>
+
+      {/* <Text fontStyle={"italic"} color={colors.medium}>
+        {error}
+      </Text> */}
 
       <Box width={"130px"} marginX={"auto"} marginTop={5}>
         <AppButton

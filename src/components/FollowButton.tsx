@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { isFollowing, useFollowUser } from "../hooks/useUsers";
+import { useFollowUser } from "../hooks/useUsers";
 import AppButton from "./AppButton";
 import useAppStore from "../store";
 
@@ -16,14 +16,10 @@ const FollowButton = ({
 }: Props) => {
   const currentUserId = useAppStore().currentUser._id;
   const [isFollowed, setIsFollowed] = useState(false);
-  const handleFollow = useFollowUser(selectedUserId);
+  const { handleFollow, isFollowing } = useFollowUser(selectedUserId);
 
   useEffect(() => {
-    function checkFollowing() {
-      const isCurrentlyFollowing = isFollowing(selectedUserId);
-      setIsFollowed(Boolean(isCurrentlyFollowing));
-    }
-    checkFollowing();
+    setIsFollowed(isFollowing(selectedUserId));
   }, [selectedUserId]);
 
   const handleClick = async () => {
@@ -33,8 +29,9 @@ const FollowButton = ({
 
       await handleFollow();
     } catch (err: any) {
-      err;
-      // console.log("An error occured");
+      console.log(
+        "An unexpected error occured, pls report error and try again later"
+      );
     }
   };
 

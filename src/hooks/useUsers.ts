@@ -137,6 +137,7 @@ export const useUserUpdate = () => {
 export const useFollowUser = (selectedUserId: string) => {
   const queryClient = useQueryClient();
   const setCurrentUser = useAppStore().setCurrentUser;
+  const currentUser = useAppStore().currentUser;
 
   const handleFollow = async () => {
     let updatedUser: User;
@@ -150,12 +151,11 @@ export const useFollowUser = (selectedUserId: string) => {
     setCurrentUser(updatedUser);
   };
 
-  return handleFollow;
-};
+  const isFollowing = (selectedUserId: string) => {
+    return currentUser?.following.includes(selectedUserId);
+  };
 
-export const isFollowing = (selectedUserId: string) => {
-  const currentUser = useAppStore().currentUser;
-  return currentUser?.following.includes(selectedUserId);
+  return { handleFollow, isFollowing };
 };
 
 export default useUsers;

@@ -14,7 +14,6 @@ const AppLayout = () => {
       .then((res) => {
         setLoggedIn(true);
         setCurrentUser(res);
-        console.log(res);
       })
       .catch(() => {
         setLoggedIn(false);
