@@ -41,7 +41,7 @@ const EntryGrid = ({ authorId, mostLiked, noOfColumns }: Props) => {
     if (authorId) {
       setTimeFilter("allTime");
     } else {
-      setTimeFilter("today");
+      setTimeFilter("allTime"); // temp
     }
   }, []);
 
